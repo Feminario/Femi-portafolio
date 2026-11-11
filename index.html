@@ -32,6 +32,11 @@
 
   .historia{ font-size:14.5px; }
   .historia strong{ color:var(--morado-oscuro); }
+  .foto-muriel{ position:relative; margin:4px 0 16px; border-radius:26px; overflow:hidden; background:var(--periwinkle); box-shadow:0 16px 36px rgba(76,79,104,.25); }
+  .foto-muriel img:not(.deco-f){ display:block; width:100%; max-height:420px; object-fit:cover; object-position:50% 25%; }
+  .foto-muriel::after{ content:""; position:absolute; inset:0; background:linear-gradient(180deg,rgba(76,79,104,0) 55%,rgba(76,79,104,.78) 100%); pointer-events:none; }
+  .foto-muriel figcaption{ position:absolute; left:0; right:0; bottom:0; padding:14px 18px; z-index:2; color:#fff; font-family:'MuseoModerno',sans-serif; font-weight:700; font-size:16px; line-height:1.25; text-shadow:0 2px 10px rgba(0,0,0,.3); }
+  .foto-muriel .deco-f{ position:absolute; z-index:3; top:10px; right:10px; width:44px; animation:gira 10s linear infinite; }
 
   /* Monto */
   .monto-grande{ font-family:'MuseoModerno',sans-serif; font-weight:800; font-size:44px; color:var(--morado-oscuro); line-height:1; }
@@ -63,6 +68,10 @@
   .propia input{ width:100%; padding:10px 12px; border-radius:14px; border:1.5px solid rgba(126,132,174,.28); font-size:15px; font-family:inherit; margin-top:4px; background:rgba(255,255,255,.88); }
   .suma{ grid-column:1/-1; font-weight:800; font-size:13.5px; }
   .suma.ok{ color:var(--bien); } .suma.mal{ color:var(--alerta); }
+  .ayuda-propia{ grid-column:1/-1; font-size:13px; background:rgba(194,203,255,.35); border-radius:16px; padding:10px 14px; }
+  .medidor{ grid-column:1/-1; height:10px; border-radius:99px; background:rgba(126,132,174,.2); overflow:hidden; }
+  .medidor i{ display:block; height:100%; width:0; border-radius:99px; background:var(--lavanda); transition:width .25s; }
+  .medidor i.ok{ background:var(--bien); } .medidor i.mal{ background:var(--alerta); }
 
   /* Resultado */
   .res-principal{ text-align:center; }
@@ -100,7 +109,8 @@
   .legal strong{ color:var(--morado-oscuro); }
   details.fuentes{ margin-top:6px; font-size:12px; }
   details.fuentes summary{ cursor:pointer; font-weight:700; color:var(--morado); }
-  .pie{ text-align:center; font-size:12px; color:var(--morado-suave); margin-top:22px; }
+  .pie{ display:flex; align-items:center; justify-content:center; gap:10px; flex-wrap:wrap; font-size:13px; font-weight:600; color:var(--morado-suave); margin-top:26px; }
+  .pie img{ height:30px; width:auto; }
 
   @media (max-width:520px){
     .portada{ padding-right:20px; } .portada h1{ font-size:30px; max-width:calc(100% - 96px); } .portada p{ max-width:calc(100% - 100px); } .portada .d1{ width:70px; right:-10px; top:-10px; } .portada .d2{ width:92px; right:8px; bottom:-14px; } .portada .d3{ display:none; } .res-principal .cifra{ font-size:42px; }
@@ -114,7 +124,7 @@
 <main id="app">
   <div class="brand-header"><img src="assets/logo-feminario.png" alt="Feminario"></div>
 
-  <section class="portada entra">
+  <section class="portada entra" id="portada">
     <img class="deco d1 estrella-clic" id="est1" src="assets/forma-sol.png" alt="" title="¡Toca!">
     <img class="deco d3 estrella-clic" id="est2" src="assets/forma-destello.png" alt="" title="¡Toca!">
     <img class="deco d2" src="assets/ilus-cofre.png" alt="">
@@ -122,8 +132,13 @@
     <p>¿En qué se habría convertido tu tinto de cada día en los portafolios de los inversionistas más famosos del mundo?</p>
   </section>
 
-  <section class="card historia entra">
+  <section class="card historia entra" id="historia">
     <h3>La historia</h3>
+    <figure class="foto-muriel">
+      <img src="assets/muriel-siebert.jpg" alt="Muriel Siebert, la primera mujer miembro de la Bolsa de Nueva York, sentada en su oficina con un lápiz en la mano" loading="lazy">
+      <img class="deco-f" src="assets/forma-estrella-morada.png" alt="">
+      <figcaption>Muriel Siebert, la primera mujer en la Bolsa de Nueva York (1967)</figcaption>
+    </figure>
     <p><strong>Muriel Siebert</strong> fue la primera mujer miembro de la Bolsa de Nueva York. En 1967 pagó US$445.000 por su puesto, y durante años fue la única mujer entre más de mil hombres. Después ayudó a que la gente común pudiera invertir con comisiones más bajas.</p>
     <p style="margin:0">Aquí no copiamos a Muriel, porque no hay un portafolio suyo documentado. Copiamos la idea: que invertir también sea para ti. Pon cuánto puedes apartar y mira qué habría pasado con los portafolios que otros inversionistas hicieron famosos.</p>
   </section>
@@ -153,10 +168,12 @@
     <label for="inicio" style="margin-top:6px">Año en que empiezas a aportar</label>
     <select id="inicio"></select>
     <p class="suave" id="nota-inicio" style="margin:8px 0 0"></p>
+    <div class="error" id="err-calc" hidden></div>
     <button class="btn" id="calcular" type="button">Ver mi resultado</button>
   </section>
 
   <section id="resultado" hidden>
+    <button class="btn secundario chico" type="button" id="otro-top" style="margin-bottom:14px">← Calcular con otro portafolio</button>
     <div class="card res-principal entra">
       <p class="intro" id="r-intro"></p>
       <div class="cifra" id="r-valor"></div>
@@ -185,6 +202,12 @@
       <p class="aviso-chico" id="sens-txt"></p>
     </div>
 
+    <div class="card entra" style="text-align:center">
+      <h3>¿Quieres probar con otro portafolio?</h3>
+      <p class="suave" style="margin:0">Cambia el portafolio, el monto o el año y mira qué habría pasado.</p>
+      <button class="btn" type="button" id="otro-bot">Quiero calcular con otro portafolio</button>
+    </div>
+
     <div class="card entra">
       <h3>¿Quieres más portafolios de la serie?</h3>
       <p class="lead" style="font-size:14.5px">Déjanos tu correo y te avisamos cuando haya nuevos portafolios y herramientas para empezar a invertir con calma.</p>
@@ -210,7 +233,7 @@
     </details>
   </section>
 
-  <div class="pie">Hecho con 💜 por Feminario</div>
+  <div class="pie">Hecho con 💜 por <img src="assets/logo-feminario.png" alt="Feminario"></div>
 </main>
 
 <script src="assets/config.js"></script>
@@ -256,7 +279,7 @@
     { id:'propia', nombre:'Arma la tuya', quien:'Mezcla los fondos que quieras', desc:'Pon el porcentaje de cada fondo. Debe sumar 100%.', pesos:null }
   ];
 
-  var estado = { monto:1000/12, portafolio:'vt', inicio:null, propia:{VT:50, BND:50}, ultimo:null };
+  var estado = { monto:1000/12, portafolio:'vt', inicio:null, propia:{}, ultimo:null };
 
   /* ---------- Utilidades ---------- */
   var $ = function(id){ return document.getElementById(id); };
@@ -313,7 +336,7 @@
     $('opciones').innerHTML = PORTAFOLIOS.map(function(p){
       var mezcla = p.pesos ? '<span class="mezcla">' + Object.keys(p.pesos).map(function(k){ return '<i>' + Math.round(p.pesos[k]) + '% ' + k + '</i>'; }).join('') + '</span>' : '';
       return '<button type="button" class="opcion' + (p.id === estado.portafolio ? ' sel' : '') + '" data-id="' + p.id + '"><b>' + p.nombre +
-        (p.aprox ? '<span class="tag-aprox">aproximación</span>' : '') + '</b><span class="quien">' + p.quien + '</span><span class="desc">' + p.desc + '</span>' + mezcla + '</button>';
+        '</b><span class="quien">' + p.quien + '</span><span class="desc">' + p.desc + '</span>' + mezcla + '</button>';
     }).join('');
     document.querySelectorAll('.opcion').forEach(function(b){
       b.addEventListener('click', function(){ estado.portafolio = b.dataset.id; pintarOpciones(); pintarPropia(); pintarAnios(); });
@@ -323,9 +346,10 @@
     var el = $('propia');
     if (estado.portafolio !== 'propia'){ el.hidden = true; return; }
     el.hidden = false;
-    el.innerHTML = Object.keys(NOMBRE_ETF).map(function(k){
-      return '<label>' + NOMBRE_ETF[k] + '<input type="number" min="0" max="100" step="1" data-etf="' + k + '" value="' + (estado.propia[k] || 0) + '"></label>';
-    }).join('') + '<div class="suma" id="suma"></div>';
+    el.innerHTML = '<div class="ayuda-propia">Escribe qué porcentaje de tu plata va a cada fondo. Todo junto debe sumar <b>100%</b>. Por ejemplo, para un solo fondo escribe 100 en ese y deja los demás vacíos.</div>' +
+      Object.keys(NOMBRE_ETF).map(function(k){
+        return '<label>' + NOMBRE_ETF[k] + '<input type="number" min="0" max="100" step="1" inputmode="numeric" placeholder="0" data-etf="' + k + '" value="' + (estado.propia[k] || '') + '"></label>';
+      }).join('') + '<div class="suma" id="suma"></div><div class="medidor" id="medidor"><i></i></div>';
     el.querySelectorAll('input').forEach(function(i){
       i.addEventListener('input', function(){ estado.propia[i.dataset.etf] = Math.max(0, Math.min(100, Number(i.value) || 0)); sumaPropia(); pintarAnios(); });
     });
@@ -334,8 +358,9 @@
   function sumaPropia(){
     var s = Object.keys(estado.propia).reduce(function(a, k){ return a + (estado.propia[k] || 0); }, 0), el = $('suma');
     if (!el) return;
-    el.textContent = 'Suma: ' + s + '%' + (s === 100 ? ' ✓' : ' (debe ser 100%)');
+    el.textContent = s === 100 ? 'Listo: tu mezcla suma 100% ✓' : s === 0 ? 'Aún no has puesto nada. Te faltan 100%.' : s < 100 ? 'Vas en ' + s + '%. Te faltan ' + (100 - s) + '% para llegar a 100%.' : 'Vas en ' + s + '%. Te sobran ' + (s - 100) + '%: quítalos de algún fondo.';
     el.className = 'suma ' + (s === 100 ? 'ok' : 'mal');
+    var md = $('medidor'); if (md){ var f = md.firstChild; f.style.width = Math.min(100, s) + '%'; f.className = s === 100 ? 'ok' : s > 100 ? 'mal' : ''; md.className = 'medidor' + (s > 100 ? ' pasa' : ''); }
   }
 
   /* ---------- Años ---------- */
@@ -364,7 +389,9 @@
 
   function mostrar(){
     var err = validar();
-    if (err){ alert(err); return; }
+    var ec = $('err-calc');
+    if (err){ ec.textContent = err; ec.hidden = false; ec.scrollIntoView({ behavior:'smooth', block:'center' }); return; }
+    ec.hidden = true;
     var pesos = pesosActuales(), r = simular(pesos, estado.inicio, estado.monto);
     estado.ultimo = r;
     var veces = r.valor / r.aportado;
@@ -379,11 +406,21 @@
       '<div class="mejor">Mejor año<b>' + pct(r.mejor.R * 100) + '</b>' + r.mejor.y + '</div>' +
       '<div class="peor">Peor año<b>' + pct(r.peor.R * 100) + '</b>' + r.peor.y + '</div>';
     grafica(r); barras(pesos);
+    ['portada', 'historia', 'paso1', 'paso2', 'paso3'].forEach(function(id){ $(id).hidden = true; });
     var sec = $('resultado'); sec.hidden = false;
-    setTimeout(function(){ sec.scrollIntoView({ behavior:'smooth', block:'start' }); }, 50);
+    window.scrollTo({ top:0, behavior:'smooth' });
     if (window.lanzarConfeti) lanzarConfeti({ n:110, dur:2800 });
   }
   $('calcular').addEventListener('click', mostrar);
+  function volver(){
+    $('resultado').hidden = true;
+    ['portada', 'paso1', 'paso2', 'paso3'].forEach(function(id){ $(id).hidden = false; });
+    $('historia').hidden = false;
+    window.scrollTo({ top:0, behavior:'smooth' });
+    setTimeout(function(){ $('paso2').scrollIntoView({ behavior:'smooth', block:'start' }); }, 250);
+  }
+  $('otro-top').addEventListener('click', volver);
+  $('otro-bot').addEventListener('click', volver);
 
   function grafica(r){
     var W = 640, H = 280, pl = 56, pr = 14, pt = 14, pb = 30, n = r.serie.length;
