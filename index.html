@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calculadora Femi Portafolio · Feminario</title>
+<meta name="description" content="Mira en qué se habría convertido un ahorro pequeño y constante, tu tinto de cada día, en los portafolios de inversionistas famosos. Simulación educativa con datos históricos.">
+<link rel="icon" href="assets/forma-estrella-morada.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=MuseoModerno:wght@500;700;800&family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/marca.css">
+<style>
+  #app{ max-width:680px; margin:0 auto; padding:26px 18px 60px; position:relative; }
+  .brand-header{ display:flex; justify-content:center; margin-bottom:14px; }
+  .brand-header img{ height:46px; width:auto; }
+  [hidden]{ display:none !important; }
+  .entra{ animation:entra .45s ease both; }
+  @keyframes entra{ from{ opacity:0; transform:translateY(14px); } to{ opacity:1; transform:none; } }
+
+  /* Portada */
+  .portada{ position:relative; border-radius:30px; overflow:hidden; margin-bottom:18px; padding:34px 24px 30px;
+    background:linear-gradient(135deg,var(--periwinkle),var(--rosa-claro) 60%,var(--verde)); box-shadow:0 20px 50px rgba(76,79,104,.2); }
+  .portada h1{ font-size:36px; line-height:1.05; margin:0 0 10px; color:var(--morado-oscuro); max-width:430px; }
+  .portada p{ margin:0; font-size:15.5px; max-width:400px; color:var(--texto); }
+  .portada .deco{ position:absolute; pointer-events:none; }
+  .portada .d1{ width:96px; right:-14px; top:-14px; animation:gira 14s linear infinite; }
+  .portada .d2{ width:120px; right:18px; bottom:-26px; }
+  .portada .d3{ width:40px; right:130px; top:38px; animation:gira 9s linear infinite reverse; }
+  @keyframes gira{ to{ transform:rotate(360deg); } }
+  .portada .estrella-clic{ cursor:pointer; pointer-events:auto; }
+
+  .historia{ font-size:14.5px; }
+  .historia strong{ color:var(--morado-oscuro); }
+
+  /* Monto */
+  .monto-grande{ font-family:'MuseoModerno',sans-serif; font-weight:800; font-size:44px; color:var(--morado-oscuro); line-height:1; }
+  .monto-grande small{ font-size:16px; color:var(--morado-suave); font-weight:700; }
+  .equiv{ display:flex; flex-wrap:wrap; gap:8px; margin:12px 0 4px; }
+  .equiv span{ background:rgba(126,132,174,.12); color:var(--morado-oscuro); border-radius:999px; padding:6px 12px; font-size:12.5px; font-weight:700; }
+  input[type=range]{ -webkit-appearance:none; appearance:none; width:100%; height:10px; border-radius:99px; background:rgba(126,132,174,.25); outline:none; margin:16px 0 4px; }
+  input[type=range]::-webkit-slider-thumb{ -webkit-appearance:none; width:30px; height:30px; border-radius:50%; background:var(--verde); border:3px solid var(--morado-oscuro); cursor:pointer; box-shadow:0 4px 10px rgba(76,79,104,.3); }
+  input[type=range]::-moz-range-thumb{ width:26px; height:26px; border-radius:50%; background:var(--verde); border:3px solid var(--morado-oscuro); cursor:pointer; }
+  .atajos{ display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
+  .atajos button{ border:1.5px solid rgba(126,132,174,.3); background:rgba(255,255,255,.9); border-radius:999px; padding:8px 14px; font-family:inherit; font-weight:700; font-size:12.5px; color:var(--morado-oscuro); cursor:pointer; }
+  .atajos button:hover{ background:var(--rosa-claro); border-color:var(--lavanda); }
+
+  /* Portafolios */
+  .opciones{ display:grid; gap:10px; }
+  .opcion{ text-align:left; border:1.5px solid rgba(126,132,174,.3); background:rgba(255,255,255,.9); border-radius:22px; padding:14px 16px; cursor:pointer; font-family:inherit; color:var(--texto); transition:transform .12s, background .15s, border-color .15s, box-shadow .15s; }
+  .opcion:hover{ background:var(--rosa-claro); border-color:var(--lavanda); transform:translateY(-1px); }
+  .opcion.sel{ background:var(--verde); border-color:var(--morado-oscuro); box-shadow:0 8px 18px rgba(126,132,174,.35); }
+  .opcion:focus-visible{ outline:3px solid var(--periwinkle); outline-offset:2px; }
+  .opcion b{ font-family:'MuseoModerno',sans-serif; font-size:18px; color:var(--morado-oscuro); display:block; }
+  .opcion .quien{ font-size:12.5px; color:var(--morado-suave); font-weight:700; margin:2px 0 6px; display:block; }
+  .opcion .desc{ font-size:13.5px; display:block; }
+  .opcion .mezcla{ display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
+  .opcion .mezcla i{ font-style:normal; background:rgba(126,132,174,.14); border-radius:999px; padding:3px 10px; font-size:11.5px; font-weight:700; color:var(--morado-oscuro); }
+  .tag-aprox{ display:inline-block; background:var(--durazno); color:var(--morado-oscuro); border-radius:999px; padding:2px 9px; font-size:11px; font-weight:800; margin-left:6px; vertical-align:middle; }
+
+  .propia{ margin-top:14px; display:grid; grid-template-columns:1fr 1fr; gap:10px 14px; }
+  .propia label{ margin:0; font-size:12.5px; }
+  .propia input{ width:100%; padding:10px 12px; border-radius:14px; border:1.5px solid rgba(126,132,174,.28); font-size:15px; font-family:inherit; margin-top:4px; background:rgba(255,255,255,.88); }
+  .suma{ grid-column:1/-1; font-weight:800; font-size:13.5px; }
+  .suma.ok{ color:var(--bien); } .suma.mal{ color:var(--alerta); }
+
+  /* Resultado */
+  .res-principal{ text-align:center; }
+  .res-principal .intro{ font-size:14.5px; margin-bottom:6px; }
+  .res-principal .cifra{ font-family:'MuseoModerno',sans-serif; font-weight:800; font-size:54px; line-height:1.05; color:var(--morado-oscuro); }
+  .res-principal .cifra small{ font-size:18px; color:var(--morado-suave); }
+  .res-principal .sub{ font-size:13.5px; color:var(--morado-suave); font-weight:600; }
+  .trio{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:18px; }
+  .trio div{ background:rgba(255,255,255,.75); border-radius:20px; padding:12px 8px; text-align:center; }
+  .trio b{ display:block; font-family:'MuseoModerno',sans-serif; font-size:20px; color:var(--morado-oscuro); }
+  .trio span{ font-size:11.5px; color:var(--morado-suave); font-weight:700; }
+  .grafica{ width:100%; height:auto; display:block; margin-top:6px; }
+  .grafica text{ font-family:'Montserrat',sans-serif; font-size:11px; fill:#8A90B8; font-weight:600; }
+  .leyenda-g{ display:flex; gap:16px; flex-wrap:wrap; font-size:12.5px; font-weight:700; color:var(--morado-oscuro); margin-top:6px; }
+  .leyenda-g i{ display:inline-block; width:12px; height:12px; border-radius:50%; margin-right:6px; vertical-align:-1px; }
+  .mejor-peor{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:6px; }
+  .mejor-peor div{ border-radius:20px; padding:12px 14px; font-size:13px; }
+  .mejor-peor .mejor{ background:rgba(223,243,175,.7); } .mejor-peor .peor{ background:rgba(249,225,255,.9); }
+  .mejor-peor b{ display:block; font-family:'MuseoModerno',sans-serif; font-size:20px; color:var(--morado-oscuro); }
+  .barras{ display:flex; align-items:flex-end; gap:3px; height:130px; margin-top:12px; }
+  .barras button{ flex:1; border:none; background:var(--periwinkle); border-radius:6px 6px 0 0; min-height:6px; cursor:pointer; padding:0; transition:background .15s; position:relative; }
+  .barras button:hover{ background:var(--lavanda); }
+  .barras button.sel{ background:var(--morado); }
+  .eje-barras{ display:flex; justify-content:space-between; font-size:11px; color:var(--morado-suave); font-weight:700; margin-top:4px; }
+  .aviso-chico{ font-size:12.5px; color:var(--morado-oscuro); background:rgba(247,193,117,.35); border-radius:16px; padding:10px 14px; margin-top:12px; }
+
+  /* Correo */
+  .check{ display:flex; gap:10px; align-items:flex-start; margin:14px 0 0; font-weight:500; font-size:12.5px; }
+  .check input{ margin-top:3px; width:18px; height:18px; flex:none; accent-color:var(--morado); }
+  .ok-envio{ color:var(--bien); font-weight:700; margin-top:12px; }
+  .error{ color:var(--alerta); font-weight:700; font-size:13px; margin-top:8px; }
+
+  .legal{ font-size:12px; color:var(--morado-oscuro); line-height:1.55; }
+  .legal p{ margin:0 0 10px; }
+  .legal strong{ color:var(--morado-oscuro); }
+  details.fuentes{ margin-top:6px; font-size:12px; }
+  details.fuentes summary{ cursor:pointer; font-weight:700; color:var(--morado); }
+  .pie{ text-align:center; font-size:12px; color:var(--morado-suave); margin-top:22px; }
+
+  @media (max-width:520px){
+    .portada{ padding-right:20px; } .portada h1{ font-size:30px; max-width:calc(100% - 96px); } .portada p{ max-width:calc(100% - 100px); } .portada .d1{ width:70px; right:-10px; top:-10px; } .portada .d2{ width:92px; right:8px; bottom:-14px; } .portada .d3{ display:none; } .res-principal .cifra{ font-size:42px; }
+    .trio{ grid-template-columns:1fr; } .mejor-peor{ grid-template-columns:1fr; } .propia{ grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="blob blob-1"></div><div class="blob blob-2"></div><div class="blob blob-3"></div><div class="blob blob-4"></div>
+
+<main id="app">
+  <div class="brand-header"><img src="assets/logo-feminario.png" alt="Feminario"></div>
+
+  <section class="portada entra">
+    <img class="deco d1 estrella-clic" id="est1" src="assets/forma-sol.png" alt="" title="¡Toca!">
+    <img class="deco d3 estrella-clic" id="est2" src="assets/forma-destello.png" alt="" title="¡Toca!">
+    <img class="deco d2" src="assets/ilus-cofre.png" alt="">
+    <h1>Calculadora Femi Portafolio</h1>
+    <p>¿En qué se habría convertido tu tinto de cada día en los portafolios de los inversionistas más famosos del mundo?</p>
+  </section>
+
+  <section class="card historia entra">
+    <h3>La historia</h3>
+    <p><strong>Muriel Siebert</strong> fue la primera mujer miembro de la Bolsa de Nueva York. En 1967 pagó US$445.000 por su puesto, y durante años fue la única mujer entre más de mil hombres. Después ayudó a que la gente común pudiera invertir con comisiones más bajas.</p>
+    <p style="margin:0">Aquí no copiamos a Muriel, porque no hay un portafolio suyo documentado. Copiamos la idea: que invertir también sea para ti. Pon cuánto puedes apartar y mira qué habría pasado con los portafolios que otros inversionistas hicieron famosos.</p>
+  </section>
+
+  <section class="card entra" id="paso1">
+    <h2>1. ¿Cuánto separas al mes?</h2>
+    <div class="monto-grande"><span id="m-usd">83</span> <small>dólares al mes</small></div>
+    <div class="equiv" id="equiv"></div>
+    <input type="range" id="monto" min="10" max="500" step="1" value="83" aria-label="Aporte mensual en dólares">
+    <div class="atajos">
+      <button type="button" data-usd="83.3333">US$1.000 al año</button>
+      <button type="button" data-usd="41.6667">US$500 al año</button>
+      <button type="button" data-usd="166.6667">US$2.000 al año</button>
+      <button type="button" data-cop="9000">Un tinto con almojábana al día (9.000 COP)</button>
+    </div>
+  </section>
+
+  <section class="card entra" id="paso2">
+    <h2>2. ¿Qué portafolio?</h2>
+    <p class="suave" style="margin-top:-2px">Cada uno invierte tus aportes en estos fondos (ETF) y los reparte siempre igual cada año.</p>
+    <div class="opciones" id="opciones"></div>
+    <div class="propia" id="propia" hidden></div>
+  </section>
+
+  <section class="card entra" id="paso3">
+    <h2>3. ¿Desde qué año?</h2>
+    <label for="inicio" style="margin-top:6px">Año en que empiezas a aportar</label>
+    <select id="inicio"></select>
+    <p class="suave" id="nota-inicio" style="margin:8px 0 0"></p>
+    <button class="btn" id="calcular" type="button">Ver mi resultado</button>
+  </section>
+
+  <section id="resultado" hidden>
+    <div class="card res-principal entra">
+      <p class="intro" id="r-intro"></p>
+      <div class="cifra" id="r-valor"></div>
+      <div class="sub" id="r-sub"></div>
+      <div class="trio">
+        <div><b id="r-aportado"></b><span>pusiste de tu bolsillo</span></div>
+        <div><b id="r-veces"></b><span>veces lo aportado</span></div>
+        <div><b id="r-real"></b><span>valor real (con inflación)</span></div>
+      </div>
+      <div class="aviso-chico" id="r-nota"></div>
+    </div>
+
+    <div class="card entra">
+      <h3>Año por año</h3>
+      <svg class="grafica" id="grafica" viewBox="0 0 640 280" role="img" aria-label="Gráfica de lo aportado y el valor del portafolio año por año"></svg>
+      <div class="leyenda-g"><span><i style="background:#7E84AE"></i>Valor del portafolio</span><span><i style="background:#F59356"></i>Lo que aportaste</span></div>
+      <div class="mejor-peor" id="mejor-peor"></div>
+      <p class="suave" style="margin:12px 0 0">Mira los años malos: hay caídas fuertes y toca aguantarlas. Invertir no es una línea que sube.</p>
+    </div>
+
+    <div class="card entra">
+      <h3>¿Y si hubieras empezado otro año?</h3>
+      <p class="suave" style="margin:0 0 4px">Cada barra es un año de inicio distinto, con el mismo aporte mensual y el mismo portafolio, hasta fines de 2025. Toca una para verla arriba.</p>
+      <div class="barras" id="barras"></div>
+      <div class="eje-barras"><span id="eje-a"></span><span id="eje-b"></span></div>
+      <p class="aviso-chico" id="sens-txt"></p>
+    </div>
+
+    <div class="card entra">
+      <h3>¿Quieres más portafolios de la serie?</h3>
+      <p class="lead" style="font-size:14.5px">Déjanos tu correo y te avisamos cuando haya nuevos portafolios y herramientas para empezar a invertir con calma.</p>
+      <label for="correo" style="margin-top:8px">Tu correo</label>
+      <input type="text" id="correo" inputmode="email" autocomplete="email" placeholder="tucorreo@ejemplo.com">
+      <label class="check"><input type="checkbox" id="acepto"><span>Autorizo a Feminario a tratar mi correo para enviarme contenido y novedades, de acuerdo con la política de tratamiento de datos personales (Ley 1581 de 2012). Puedo retirar mi autorización cuando quiera.</span></label>
+      <button class="btn" id="enviar" type="button">Quiero recibirlo</button>
+      <div class="error" id="err" hidden></div>
+      <div class="ok-envio" id="ok" hidden>¡Listo! Te escribiremos pronto. 💜</div>
+    </div>
+  </section>
+
+  <section class="card legal entra" id="legal">
+    <h3>Importante</h3>
+    <p><strong>Contenido exclusivamente educativo.</strong> Esta calculadora es una simulación con datos históricos. El contenido de la presente comunicación o mensaje no constituye una recomendación profesional para realizar inversiones en los términos del artículo 2.40.1.1.2 del Decreto número 2555 de 2010 o las normas que lo modifiquen, sustituyan o complementen. No es asesoría financiera, legal ni tributaria, ni una oferta o promoción de valores o productos en Colombia, y no tiene en cuenta tu situación personal, tus objetivos ni tu tolerancia al riesgo.</p>
+    <p><strong>Las rentabilidades pasadas no garantizan resultados futuros.</strong> El valor de las inversiones puede subir o bajar, y puedes perder parte o la totalidad del dinero invertido.</p>
+    <p>Los resultados no incluyen comisiones de corredores, impuestos (retenciones en EE. UU., impuestos en Colombia) ni costos de cambio de moneda. El «valor real» solo descuenta la inflación de EE. UU. Los portafolios son interpretaciones educativas de lo que sus autores han dicho públicamente y no implican que esas personas hayan recomendado esta herramienta ni participen en ella. Antes de invertir, consulta a un profesional autorizado.</p>
+    <details class="fuentes">
+      <summary>Cómo se calcula y de dónde salen los datos</summary>
+      <p style="margin-top:8px">Aportas la misma cantidad cada mes, al inicio del mes, desde el año que elijas hasta el 31 de diciembre de 2025. Usamos el retorno total anual en dólares de cada ETF, con dividendos reinvertidos, y repartimos ese retorno en tasas mensuales iguales dentro de cada año (por eso es una aproximación). El portafolio se rebalancea cada año a los mismos porcentajes. Si un fondo empezó a mitad de un año, ese año cuenta solo desde su lanzamiento. Cuando cambias de año de inicio el resultado cambia mucho: por eso lo mostramos.</p>
+      <p>Retornos: Total Real Returns (agregadora secundaria; certeza media). Inflación: IPC de EE. UU., Economic Report of the President 2026 (dato de 2025 provisional). TRM: Superfinanciera y Banco de la República. Consultadas el 11 de noviembre de 2026. Los datos no son oficiales y pueden tener diferencias con el valor liquidativo publicado por cada gestor.</p>
+      <p style="margin:0">Esta herramienta no permite comprar ni ejecutar órdenes sobre ningún valor.</p>
+    </details>
+  </section>
+
+  <div class="pie">Hecho con 💜 por Feminario</div>
+</main>
+
+<script src="assets/config.js"></script>
+<script src="assets/datos.js"></script>
+<script src="assets/confeti.js"></script>
+<script>
+(function(){
+  /* ---------- Datos ---------- */
+  var filas = window.DATOS_CSV.trim().split('\n'), cab = filas[0].split(',');
+  var D = {}; // D[año] = {cpi, trm, SPY:..., }
+  filas.slice(1).forEach(function(l){
+    var c = l.split(','), o = {};
+    cab.forEach(function(k, i){ o[k] = c[i] === 'NA' ? null : Number(c[i]); });
+    D[o.year] = o;
+  });
+  var ANIO_FIN = 2025, TRM = D[ANIO_FIN].trm;
+
+  var NOMBRE_ETF = {
+    VT:'Acciones del mundo (VT)', SPY:'Acciones de EE. UU., S&P 500 (SPY)', VTI:'Acciones totales de EE. UU. (VTI)',
+    VXUS:'Acciones fuera de EE. UU. (VXUS)', BND:'Bonos de EE. UU. (BND)', TLT:'Bonos del Tesoro a 20+ años (TLT)',
+    IEF:'Bonos del Tesoro a 7–10 años (IEF)', TIP:'Bonos ligados a la inflación (TIP)', GLD:'Oro (GLD)',
+    VNQ:'Inmobiliario (VNQ)', VWO:'Mercados emergentes (VWO)',
+    ARKK:'Innovación, ARK Innovation (ARKK)', NOBL:'Dividendos crecientes, S&P 500 Aristocrats (NOBL)', SCHD:'Dividendos de calidad (SCHD)'
+  };
+
+  var PORTAFOLIOS = [
+    { id:'vt', nombre:'El mundo entero', quien:'Una sola ETF: VT', desc:'Alrededor de 10.000 empresas de decenas de países, de EE. UU., Europa, Japón y también Latinoamérica. Disponible desde junio de 2008.', pesos:{VT:100} },
+    { id:'sp', nombre:'Solo Estados Unidos', quien:'S&P 500', desc:'Las 500 empresas más grandes de EE. UU. Es la serie más larga que tenemos (desde 1993).', pesos:{SPY:100} },
+    { id:'buffett', nombre:'90 / 10 de Warren Buffett', quien:'Inspirado en lo que dejó escrito para el fideicomiso de su esposa', aprox:true,
+      desc:'Él habló de 90% en un fondo S&P 500 de bajo costo y 10% en bonos del gobierno de corto plazo. No tenemos la serie de bonos cortos: usamos bonos a 7–10 años (IEF) como aproximación.', pesos:{SPY:90, IEF:10} },
+    { id:'dalio', nombre:'All Weather de Ray Dalio', quien:'Versión del libro de Tony Robbins', aprox:true,
+      desc:'Acciones, bonos largos, bonos medios, oro y materias primas. No tenemos la serie de materias primas (7,5%), así que repartimos ese peso entre los demás. No es el fondo real de Bridgewater.', pesos:{VTI:32.43, TLT:43.24, IEF:16.22, GLD:8.11} },
+    { id:'swensen', nombre:'Modelo de David Swensen', quien:'Su libro para inversionistas individuales (2005)', aprox:true,
+      desc:'Acciones de EE. UU., del resto del mundo, inmobiliario, bonos del Tesoro y bonos ligados a la inflación. Juntamos desarrollados y emergentes en VXUS porque no tenemos esas series por separado.', pesos:{VTI:30, VXUS:20, VNQ:20, IEF:15, TIP:15} },
+    { id:'markowitz', nombre:'50 / 50 de Harry Markowitz', quien:'Lo que contó que hacía con sus propios aportes', aprox:true,
+      desc:'Mitad acciones, mitad bonos, para no arrepentirse después. Los fondos concretos (VT y BND) los elegimos nosotras.', pesos:{VT:50, BND:50} },
+    { id:'wood', nombre:'Innovación de Cathie Wood', quien:'El fondo ARKK, que ella gestiona', aprox:true,
+      desc:'No es su portafolio personal, es el fondo que dirige. Cobra 0,75% al año. Ha tenido caídas de más del 80% desde su máximo y a 5 años perdió dinero: aquí verás años de +150% y de −67%. Disponible desde octubre de 2014.', pesos:{ARKK:100} },
+    { id:'nobl', nombre:'Dividendos crecientes (NOBL)', quien:'Inspirado en la idea de dividendos de Geraldine Weiss', aprox:true,
+      desc:'Empresas que han subido su dividendo 25 años seguidos. No replica el método de Weiss (ella miraba el rendimiento del dividendo frente a su historia). Cobra 0,35% y en 2023, 2024 y 2025 rindió menos que el S&P 500. Desde octubre de 2013.', pesos:{NOBL:100} },
+    { id:'schd', nombre:'Dividendos de calidad (SCHD)', quien:'Otra versión de la idea de dividendos', aprox:true,
+      desc:'Un fondo de dividendos de empresas sólidas, con comisión baja (0,06%, dato de fuente secundaria). Los dos periodos de NOBL y SCHD no son comparables entre sí porque empiezan en fechas distintas. Desde octubre de 2011.', pesos:{SCHD:100} },
+    { id:'propia', nombre:'Arma la tuya', quien:'Mezcla los fondos que quieras', desc:'Pon el porcentaje de cada fondo. Debe sumar 100%.', pesos:null }
+  ];
+
+  var estado = { monto:1000/12, portafolio:'vt', inicio:null, propia:{VT:50, BND:50}, ultimo:null };
+
+  /* ---------- Utilidades ---------- */
+  var $ = function(id){ return document.getElementById(id); };
+  var usd = function(n){ return 'US$' + Math.round(n).toLocaleString('es-CO'); };
+  var cop = function(n){ return '$' + Math.round(n).toLocaleString('es-CO'); };
+  var pct = function(n){ return (n >= 0 ? '+' : '') + n.toFixed(1).replace('.', ',') + '%'; };
+
+  function pesosActuales(){
+    var p = PORTAFOLIOS.filter(function(x){ return x.id === estado.portafolio; })[0];
+    if (p.pesos) return p.pesos;
+    var o = {}; Object.keys(estado.propia).forEach(function(k){ if (estado.propia[k] > 0) o[k] = estado.propia[k]; });
+    return o;
+  }
+  function primerAnio(etf){ for (var y = 1993; y <= ANIO_FIN; y++) if (D[y][etf] !== null) return y; return null; }
+  function anioMinimo(pesos){
+    var m = 0; Object.keys(pesos).forEach(function(k){ var f = primerAnio(k); if (f > m) m = f; }); return m || null;
+  }
+  function retorno(pesos, y){
+    var tot = 0, w = 0;
+    Object.keys(pesos).forEach(function(k){ tot += pesos[k] * D[y][k]; w += pesos[k]; });
+    return tot / w / 100; // retorno del portafolio con rebalanceo anual
+  }
+
+  /* ---------- Simulación ---------- */
+  function simular(pesos, ini, monto){
+    var valor = 0, aportado = 0, cpi = 1, serie = [], mejor = null, peor = null;
+    for (var y = ini; y <= ANIO_FIN; y++){
+      var R = retorno(pesos, y), rm = Math.pow(1 + R, 1/12) - 1;
+      for (var m = 0; m < 12; m++){ valor += monto; aportado += monto; valor *= (1 + rm); }
+      cpi *= 1 + D[y].cpi / 100;
+      serie.push({ y:y, valor:valor, aportado:aportado, R:R });
+      if (!mejor || R > mejor.R) mejor = { y:y, R:R };
+      if (!peor || R < peor.R) peor = { y:y, R:R };
+    }
+    return { valor:valor, aportado:aportado, real:valor / cpi, serie:serie, mejor:mejor, peor:peor, anios:ANIO_FIN - ini + 1 };
+  }
+
+  /* ---------- Monto ---------- */
+  function pintarMonto(){
+    var m = estado.monto, dia = m * 12 / 365;
+    $('m-usd').textContent = Math.round(m);
+    $('equiv').innerHTML = '<span>' + usd(m*12) + ' al año</span><span>US$' + dia.toFixed(2).replace('.', ',') + ' al día</span><span>≈ ' + cop(dia * TRM) + ' COP al día</span><span>≈ ' + cop(m * TRM) + ' COP al mes</span>';
+  }
+  $('monto').addEventListener('input', function(){ estado.monto = Number(this.value); pintarMonto(); });
+  document.querySelectorAll('.atajos button').forEach(function(b){
+    b.addEventListener('click', function(){
+      var v = b.dataset.usd ? Number(b.dataset.usd) : Math.round(Number(b.dataset.cop) * 365 / 12 / TRM);
+      estado.monto = Math.min(500, Math.max(10, v)); $('monto').value = Math.round(estado.monto); pintarMonto();
+    });
+  });
+
+  /* ---------- Portafolios ---------- */
+  function pintarOpciones(){
+    $('opciones').innerHTML = PORTAFOLIOS.map(function(p){
+      var mezcla = p.pesos ? '<span class="mezcla">' + Object.keys(p.pesos).map(function(k){ return '<i>' + Math.round(p.pesos[k]) + '% ' + k + '</i>'; }).join('') + '</span>' : '';
+      return '<button type="button" class="opcion' + (p.id === estado.portafolio ? ' sel' : '') + '" data-id="' + p.id + '"><b>' + p.nombre +
+        (p.aprox ? '<span class="tag-aprox">aproximación</span>' : '') + '</b><span class="quien">' + p.quien + '</span><span class="desc">' + p.desc + '</span>' + mezcla + '</button>';
+    }).join('');
+    document.querySelectorAll('.opcion').forEach(function(b){
+      b.addEventListener('click', function(){ estado.portafolio = b.dataset.id; pintarOpciones(); pintarPropia(); pintarAnios(); });
+    });
+  }
+  function pintarPropia(){
+    var el = $('propia');
+    if (estado.portafolio !== 'propia'){ el.hidden = true; return; }
+    el.hidden = false;
+    el.innerHTML = Object.keys(NOMBRE_ETF).map(function(k){
+      return '<label>' + NOMBRE_ETF[k] + '<input type="number" min="0" max="100" step="1" data-etf="' + k + '" value="' + (estado.propia[k] || 0) + '"></label>';
+    }).join('') + '<div class="suma" id="suma"></div>';
+    el.querySelectorAll('input').forEach(function(i){
+      i.addEventListener('input', function(){ estado.propia[i.dataset.etf] = Math.max(0, Math.min(100, Number(i.value) || 0)); sumaPropia(); pintarAnios(); });
+    });
+    sumaPropia();
+  }
+  function sumaPropia(){
+    var s = Object.keys(estado.propia).reduce(function(a, k){ return a + (estado.propia[k] || 0); }, 0), el = $('suma');
+    if (!el) return;
+    el.textContent = 'Suma: ' + s + '%' + (s === 100 ? ' ✓' : ' (debe ser 100%)');
+    el.className = 'suma ' + (s === 100 ? 'ok' : 'mal');
+  }
+
+  /* ---------- Años ---------- */
+  function pintarAnios(){
+    var pesos = pesosActuales(), min = anioMinimo(pesos), sel = $('inicio');
+    if (!min){ sel.innerHTML = ''; $('nota-inicio').textContent = 'Elige al menos un fondo.'; return; }
+    var previo = estado.inicio;
+    var html = '';
+    for (var y = min; y <= ANIO_FIN; y++) html += '<option value="' + y + '">' + y + '</option>';
+    sel.innerHTML = html;
+    var por = previo && previo >= min && previo <= ANIO_FIN ? previo : (min >= 2008 ? min : Math.max(min, 2008));
+    sel.value = por; estado.inicio = por;
+    var parciales = Object.keys(pesos).filter(function(k){ return primerAnio(k) === min; });
+    $('nota-inicio').textContent = 'Con este portafolio la serie empieza en ' + min + (parciales.length ? ', año en que ' + parciales.join(', ') + (parciales.length > 1 ? ' empezaron' : ' empezó') + ' a mitad de año: ese primer año cuenta solo desde su lanzamiento.' : '.') + ' Termina el 31 de diciembre de 2025.';
+  }
+  $('inicio').addEventListener('change', function(){ estado.inicio = Number(this.value); });
+
+  /* ---------- Resultado ---------- */
+  function validar(){
+    var pesos = pesosActuales(), s = Object.keys(pesos).reduce(function(a, k){ return a + pesos[k]; }, 0);
+    if (estado.portafolio === 'propia' && Math.round(s) !== 100) return 'Tu mezcla debe sumar 100%. Ahora suma ' + Math.round(s) + '%.';
+    if (!Object.keys(pesos).length) return 'Elige al menos un fondo.';
+    return null;
+  }
+  function nombrePortafolio(){ return PORTAFOLIOS.filter(function(x){ return x.id === estado.portafolio; })[0].nombre; }
+
+  function mostrar(){
+    var err = validar();
+    if (err){ alert(err); return; }
+    var pesos = pesosActuales(), r = simular(pesos, estado.inicio, estado.monto);
+    estado.ultimo = r;
+    var veces = r.valor / r.aportado;
+    $('r-intro').textContent = 'Con ' + usd(estado.monto) + ' al mes en «' + nombrePortafolio() + '», desde ' + estado.inicio + ' hasta fines de 2025 (' + r.anios + ' años), esta simulación con datos históricos da:';
+    $('r-valor').innerHTML = usd(r.valor) + ' <small>al 31 dic. 2025</small>';
+    $('r-sub').textContent = 'No es una promesa: es lo que habría pasado en ese período concreto.';
+    $('r-aportado').textContent = usd(r.aportado);
+    $('r-veces').textContent = veces.toFixed(1).replace('.', ',') + '×';
+    $('r-real').textContent = usd(r.real);
+    $('r-nota').textContent = 'El valor real descuenta la inflación de EE. UU. y se expresa en dólares de ' + estado.inicio + '. Sin comisiones de bróker, impuestos ni cambio de moneda.';
+    $('mejor-peor').innerHTML =
+      '<div class="mejor">Mejor año<b>' + pct(r.mejor.R * 100) + '</b>' + r.mejor.y + '</div>' +
+      '<div class="peor">Peor año<b>' + pct(r.peor.R * 100) + '</b>' + r.peor.y + '</div>';
+    grafica(r); barras(pesos);
+    var sec = $('resultado'); sec.hidden = false;
+    setTimeout(function(){ sec.scrollIntoView({ behavior:'smooth', block:'start' }); }, 50);
+    if (window.lanzarConfeti) lanzarConfeti({ n:110, dur:2800 });
+  }
+  $('calcular').addEventListener('click', mostrar);
+
+  function grafica(r){
+    var W = 640, H = 280, pl = 56, pr = 14, pt = 14, pb = 30, n = r.serie.length;
+    var max = Math.max.apply(null, r.serie.map(function(s){ return Math.max(s.valor, s.aportado); })) * 1.08;
+    var x = function(i){ return pl + (n === 1 ? 0 : i * (W - pl - pr) / (n - 1)); };
+    var y = function(v){ return H - pb - v / max * (H - pt - pb); };
+    var linea = function(k){ return r.serie.map(function(s, i){ return (i ? 'L' : 'M') + x(i).toFixed(1) + ' ' + y(s[k]).toFixed(1); }).join(' '); };
+    var g = '';
+    for (var t = 0; t <= 4; t++){
+      var v = max * t / 4, yy = y(v);
+      g += '<line x1="' + pl + '" x2="' + (W - pr) + '" y1="' + yy + '" y2="' + yy + '" stroke="rgba(126,132,174,.2)"/><text x="' + (pl - 8) + '" y="' + (yy + 4) + '" text-anchor="end">' + (v >= 1000 ? 'US$' + Math.round(v / 1000) + ' mil' : 'US$' + Math.round(v)) + '</text>';
+    }
+    var paso = Math.ceil(n / 7);
+    r.serie.forEach(function(s, i){ if (i % paso === 0 || i === n - 1) g += '<text x="' + x(i) + '" y="' + (H - 8) + '" text-anchor="middle">' + s.y + '</text>'; });
+    var area = linea('valor') + ' L' + x(n - 1).toFixed(1) + ' ' + y(0) + ' L' + x(0).toFixed(1) + ' ' + y(0) + ' Z';
+    g += '<path d="' + area + '" fill="rgba(194,203,255,.45)"/>';
+    g += '<path d="' + linea('aportado') + '" fill="none" stroke="#F59356" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>';
+    g += '<path d="' + linea('valor') + '" fill="none" stroke="#7E84AE" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>';
+    var ult = r.serie[n - 1];
+    g += '<circle cx="' + x(n - 1) + '" cy="' + y(ult.valor) + '" r="6" fill="#DFF3AF" stroke="#4C4F68" stroke-width="2.5"/>';
+    $('grafica').innerHTML = g;
+  }
+
+  function barras(pesos){
+    var min = anioMinimo(pesos), items = [];
+    for (var y = min; y <= ANIO_FIN; y++){
+      var r = simular(pesos, y, estado.monto);
+      items.push({ y:y, v:r.valor / r.aportado, valor:r.valor, aportado:r.aportado });
+    }
+    var mx = Math.max.apply(null, items.map(function(i){ return i.v; }));
+    $('barras').innerHTML = items.map(function(i){
+      return '<button type="button" data-y="' + i.y + '" class="' + (i.y === estado.inicio ? 'sel' : '') + '" style="height:' + Math.max(5, i.v / mx * 100) + '%" title="Desde ' + i.y + ': ' + i.v.toFixed(1).replace('.', ',') + '× lo aportado" aria-label="Desde ' + i.y + ': ' + i.v.toFixed(1) + ' veces lo aportado"></button>';
+    }).join('');
+    $('eje-a').textContent = 'Si empiezas en ' + min; $('eje-b').textContent = ANIO_FIN;
+    var lo = items.reduce(function(a, b){ return b.v < a.v ? b : a; }), hi = items.reduce(function(a, b){ return b.v > a.v ? b : a; });
+    $('sens-txt').textContent = 'Según el año de inicio, el resultado va de ' + lo.v.toFixed(1).replace('.', ',') + '× lo aportado (desde ' + lo.y + ') a ' + hi.v.toFixed(1).replace('.', ',') + '× (desde ' + hi.y + '). Empezar antes o después de una crisis cambia mucho el resultado.';
+    $('barras').querySelectorAll('button').forEach(function(b){
+      b.addEventListener('click', function(e){
+        estado.inicio = Number(b.dataset.y); $('inicio').value = estado.inicio;
+        var rect = b.getBoundingClientRect();
+        if (window.lanzarConfeti) lanzarConfeti({ n:28, dur:1800, x:rect.left + rect.width / 2, y:rect.top });
+        mostrar();
+      });
+    });
+  }
+
+  /* ---------- Correo ---------- */
+  $('enviar').addEventListener('click', function(){
+    var err = $('err'); err.hidden = true;
+    var correo = $('correo').value.trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(correo)){ err.textContent = 'Revisa tu correo.'; err.hidden = false; return; }
+    if (!$('acepto').checked){ err.textContent = 'Necesitamos tu autorización para guardar tu correo.'; err.hidden = false; return; }
+    var r = estado.ultimo;
+    var datos = {
+      'Fecha': new Date().toISOString(), 'Correo': correo, 'Autorizó datos': 'Sí',
+      'Portafolio': nombrePortafolio(), 'Mezcla': JSON.stringify(pesosActuales()),
+      'Aporte mensual USD': estado.monto, 'Año inicio': estado.inicio,
+      'Aportado USD': r ? Math.round(r.aportado) : '', 'Valor final USD': r ? Math.round(r.valor) : '',
+      'Origen': new URLSearchParams(location.search).get('origen') || new URLSearchParams(location.search).get('utm_source') || ''
+    };
+    var url = (window.PORTAFOLIO_CFG || {}).API_URL;
+    var fin = function(){ $('ok').hidden = false; $('enviar').disabled = true; if (window.lanzarConfeti) lanzarConfeti({ n:90, dur:2600 }); };
+    if (!url){ fin(); return; }
+    $('enviar').disabled = true;
+    fetch(url, { method:'POST', mode:'no-cors', headers:{ 'Content-Type':'text/plain' }, body:JSON.stringify(datos) })
+      .then(fin).catch(function(){ $('enviar').disabled = false; err.textContent = 'No pudimos guardarlo. Intenta de nuevo.'; err.hidden = false; });
+  });
+
+  /* ---------- Estrellas de la portada ---------- */
+  ['est1', 'est2'].forEach(function(id){
+    $(id).addEventListener('click', function(e){
+      var r = e.target.getBoundingClientRect();
+      if (window.lanzarConfeti) lanzarConfeti({ n:60, dur:2200, x:r.left + r.width / 2, y:r.top + r.height / 2 });
+    });
+  });
+
+  pintarMonto(); pintarOpciones(); pintarPropia(); pintarAnios();
+})();
+</script>
+</body>
+</html>
