@@ -32,11 +32,31 @@
 
   .historia{ font-size:14.5px; }
   .historia strong{ color:var(--morado-oscuro); }
-  .foto-muriel{ position:relative; margin:4px 0 16px; border-radius:26px; overflow:hidden; background:var(--periwinkle); box-shadow:0 16px 36px rgba(76,79,104,.25); }
-  .foto-muriel img:not(.deco-f){ display:block; width:100%; max-height:420px; object-fit:cover; object-position:50% 25%; }
-  .foto-muriel::after{ content:""; position:absolute; inset:0; background:linear-gradient(180deg,rgba(76,79,104,0) 55%,rgba(76,79,104,.78) 100%); pointer-events:none; }
-  .foto-muriel figcaption{ position:absolute; left:0; right:0; bottom:0; padding:14px 18px; z-index:2; color:#fff; font-family:'MuseoModerno',sans-serif; font-weight:700; font-size:16px; line-height:1.25; text-shadow:0 2px 10px rgba(0,0,0,.3); }
-  .foto-muriel .deco-f{ position:absolute; z-index:3; top:10px; right:10px; width:44px; animation:gira 10s linear infinite; }
+  .foto-muriel{ position:relative; margin:0 0 14px; border-radius:22px; overflow:hidden; background:var(--periwinkle); box-shadow:0 12px 28px rgba(76,79,104,.22); }
+  .foto-muriel img{ display:block; width:100%; height:190px; object-fit:cover; object-position:50% 22%; }
+  .foto-muriel::after{ content:""; position:absolute; inset:0; background:linear-gradient(180deg,rgba(76,79,104,0) 58%,rgba(76,79,104,.78) 100%); pointer-events:none; }
+  .foto-muriel figcaption{ position:absolute; left:0; right:0; bottom:0; padding:10px 14px; z-index:2; color:#fff; font-family:'MuseoModerno',sans-serif; font-weight:700; font-size:14px; line-height:1.25; text-shadow:0 2px 10px rgba(0,0,0,.3); }
+  .link-historia{ margin-top:12px; background:rgba(255,255,255,.7); border:1.5px solid rgba(126,132,174,.35); color:var(--morado-oscuro); border-radius:999px; padding:7px 14px; font-family:inherit; font-weight:700; font-size:12.5px; cursor:pointer; }
+  .link-historia:hover{ background:var(--rosa-claro); }
+  .link-historia:focus{ outline:none; } .link-historia:focus-visible{ outline:3px solid var(--periwinkle); outline-offset:2px; }
+
+  /* Pop-up de la historia */
+  .modal{ position:fixed; inset:0; z-index:400; display:flex; align-items:center; justify-content:center; padding:18px; background:rgba(76,79,104,.5); -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px); animation:vela .3s ease both; }
+  .modal[hidden]{ display:none; }
+  .modal.sale{ animation:vela-fuera .25s ease both; }
+  .modal-caja{ position:relative; width:100%; max-width:460px; max-height:calc(100vh - 36px); overflow:auto; background:var(--crema); border-radius:30px; padding:20px 20px 22px; box-shadow:0 30px 80px rgba(76,79,104,.45); animation:sube .4s cubic-bezier(.2,.9,.3,1.2) both; }
+  .modal.sale .modal-caja{ animation:baja .25s ease both; }
+  .modal-caja h2{ font-size:22px; margin:0 0 8px; }
+  .modal-caja p{ font-size:14px; margin:0 0 10px; }
+  .modal-caja .btn{ margin-top:12px; }
+  .modal-x{ position:absolute; z-index:5; top:12px; left:12px; width:34px; height:34px; border-radius:50%; border:none; background:rgba(255,255,255,.9); color:var(--morado-oscuro); font-size:22px; line-height:1; cursor:pointer; box-shadow:0 4px 10px rgba(76,79,104,.25); }
+  .modal-x:focus-visible, .modal-caja .btn:focus-visible{ outline:3px solid var(--periwinkle); outline-offset:2px; }
+  .modal-estrella{ position:absolute; z-index:5; top:-18px; right:-12px; width:64px; animation:gira 12s linear infinite; pointer-events:none; }
+  @keyframes vela{ from{ opacity:0; } to{ opacity:1; } }
+  @keyframes vela-fuera{ from{ opacity:1; } to{ opacity:0; } }
+  @keyframes sube{ from{ opacity:0; transform:translateY(30px) scale(.94); } to{ opacity:1; transform:none; } }
+  @keyframes baja{ from{ opacity:1; transform:none; } to{ opacity:0; transform:translateY(20px) scale(.96); } }
+  @media (prefers-reduced-motion: reduce){ .modal, .modal-caja{ animation:none; } }
 
   /* Monto */
   .monto-grande{ font-family:'MuseoModerno',sans-serif; font-weight:800; font-size:44px; color:var(--morado-oscuro); line-height:1; }
@@ -138,17 +158,7 @@
     <img class="deco d2" src="assets/ilus-cofre.png" alt="">
     <h1>Calculadora Femi Portafolio</h1>
     <p>¿En qué se habría convertido tu tinto de cada día en los portafolios de los inversionistas más famosos del mundo?</p>
-  </section>
-
-  <section class="card historia entra" id="historia">
-    <h3>La historia</h3>
-    <figure class="foto-muriel">
-      <img src="assets/muriel-siebert.jpg" alt="Muriel Siebert, la primera mujer miembro de la Bolsa de Nueva York, sentada en su oficina con un lápiz en la mano" loading="lazy">
-      <img class="deco-f" src="assets/forma-estrella-morada.png" alt="">
-      <figcaption>Muriel Siebert, la primera mujer en la Bolsa de Nueva York (1967)</figcaption>
-    </figure>
-    <p><strong>Muriel Siebert</strong> fue la primera mujer miembro de la Bolsa de Nueva York. En 1967 pagó US$445.000 por su puesto, y durante años fue la única mujer entre más de mil hombres. Después ayudó a que la gente común pudiera invertir con comisiones más bajas.</p>
-    <p style="margin:0">Aquí no copiamos a Muriel, porque no hay un portafolio suyo documentado. Copiamos la idea: que invertir también sea para ti. Pon cuánto puedes apartar y mira qué habría pasado con los portafolios que otros inversionistas hicieron famosos.</p>
+    <button type="button" class="link-historia" id="ver-historia">Conoce a Muriel Siebert →</button>
   </section>
 
   <section class="card entra" id="paso1">
@@ -216,12 +226,6 @@
       <p class="aviso-chico" id="sens-txt"></p>
     </div>
 
-    <div class="card entra" style="text-align:center">
-      <h3>¿Quieres probar con otro portafolio?</h3>
-      <p class="suave" style="margin:0">Cambia el portafolio, el monto o el año y mira qué habría pasado.</p>
-      <button class="btn" type="button" id="otro-bot">Quiero calcular con otro portafolio</button>
-    </div>
-
     <div class="card entra">
       <h3>¿Quieres más portafolios de la serie?</h3>
       <p class="lead" style="font-size:14.5px">Déjanos tu correo y te avisamos cuando haya nuevos portafolios y herramientas para empezar a invertir con calma.</p>
@@ -250,6 +254,22 @@
 
   <div class="pie">Hecho con 💜 por <img src="assets/logo-feminario.png" alt="Feminario"></div>
 </main>
+
+
+<div class="modal" id="modal-historia" role="dialog" aria-modal="true" aria-labelledby="mh-t" hidden>
+  <div class="modal-caja">
+    <img class="modal-estrella" src="assets/forma-sol.png" alt="">
+    <button type="button" class="modal-x" id="mh-x" aria-label="Cerrar">×</button>
+    <figure class="foto-muriel">
+      <img src="assets/muriel-siebert.jpg" alt="Muriel Siebert, la primera mujer miembro de la Bolsa de Nueva York, sentada en su oficina con un lápiz en la mano">
+      <figcaption>Muriel Siebert · Bolsa de Nueva York, 1967</figcaption>
+    </figure>
+    <h2 id="mh-t">Antes de calcular, una historia</h2>
+    <p><strong>Muriel Siebert</strong> fue la primera mujer miembro de la Bolsa de Nueva York. En 1967 pagó US$445.000 por su puesto, y durante años fue la única mujer entre más de mil hombres. Después ayudó a que la gente común pudiera invertir con comisiones más bajas.</p>
+    <p>Aquí no copiamos a Muriel, porque no hay un portafolio suyo documentado. Copiamos la idea: que invertir también sea para ti. Pon cuánto puedes apartar y mira qué habría pasado con los portafolios que otros inversionistas hicieron famosos.</p>
+    <button class="btn" type="button" id="mh-ok">Vamos a calcular</button>
+  </div>
+</div>
 
 <script src="assets/config.js"></script>
 <script src="assets/datos.js"></script>
@@ -447,7 +467,7 @@
       '<div class="mejor">Mejor año<b>' + pct(r.mejor.R * 100) + '</b>' + r.mejor.y + '</div>' +
       '<div class="peor">Peor año<b>' + pct(r.peor.R * 100) + '</b>' + r.peor.y + '</div>';
     grafica(r); barras(pesos);
-    ['portada', 'historia', 'paso1', 'paso2', 'paso3'].forEach(function(id){ $(id).hidden = true; });
+    ['portada', 'paso1', 'paso2', 'paso3'].forEach(function(id){ $(id).hidden = true; });
     var sec = $('resultado'); sec.hidden = false;
     window.scrollTo({ top:0, behavior:'smooth' });
     if (window.lanzarConfeti) lanzarConfeti({ n:110, dur:2800 });
@@ -456,12 +476,10 @@
   function volver(){
     $('resultado').hidden = true;
     ['portada', 'paso1', 'paso2', 'paso3'].forEach(function(id){ $(id).hidden = false; });
-    $('historia').hidden = false;
     window.scrollTo({ top:0, behavior:'smooth' });
     setTimeout(function(){ $('paso2').scrollIntoView({ behavior:'smooth', block:'start' }); }, 250);
   }
   $('otro-top').addEventListener('click', volver);
-  $('otro-bot').addEventListener('click', volver);
 
   function grafica(r){
     var W = 640, H = 280, pl = 72, pr = 14, pt = 14, pb = 30, n = r.serie.length;
@@ -537,6 +555,32 @@
       if (window.lanzarConfeti) lanzarConfeti({ n:60, dur:2200, x:r.left + r.width / 2, y:r.top + r.height / 2 });
     });
   });
+
+  /* ---------- Historia en pop-up: aparece la primera vez ---------- */
+  var VISTA = 'femi-portafolio-historia-vista', vistaMem = false;
+  function yaVista(){ try { return vistaMem || localStorage.getItem(VISTA) === '1'; } catch (e) { return vistaMem; } }
+  function marcarVista(){ vistaMem = true; try { localStorage.setItem(VISTA, '1'); } catch (e) {} }
+  var modal = $('modal-historia'), ultimoFoco = null;
+  function abrirHistoria(){
+    ultimoFoco = document.activeElement; modal.classList.remove('sale'); modal.hidden = false;
+    document.body.style.overflow = 'hidden'; setTimeout(function(){ $('mh-ok').focus(); }, 60);
+  }
+  function cerrarHistoria(){
+    if (modal.hidden) return;
+    marcarVista(); modal.classList.add('sale');
+    setTimeout(function(){ modal.hidden = true; modal.classList.remove('sale'); document.body.style.overflow = ''; if (ultimoFoco && ultimoFoco.focus) ultimoFoco.focus(); }, 240);
+  }
+  $('mh-ok').addEventListener('click', function(){ cerrarHistoria(); if (window.lanzarConfeti) lanzarConfeti({ n:70, dur:2400 }); });
+  $('mh-x').addEventListener('click', cerrarHistoria);
+  modal.addEventListener('click', function(e){ if (e.target === modal) cerrarHistoria(); });
+  document.addEventListener('keydown', function(e){
+    if (modal.hidden) return;
+    if (e.key === 'Escape') cerrarHistoria();
+    if (e.key === 'Tab'){ var f = modal.querySelectorAll('button'); var a = f[0], z = f[f.length - 1];
+      if (e.shiftKey && document.activeElement === a){ e.preventDefault(); z.focus(); } else if (!e.shiftKey && document.activeElement === z){ e.preventDefault(); a.focus(); } }
+  });
+  $('ver-historia').addEventListener('click', abrirHistoria);
+  if (!yaVista()) abrirHistoria();
 
   pintarMonto(); pintarOpciones(); pintarPropia(); pintarAnios();
 })();
