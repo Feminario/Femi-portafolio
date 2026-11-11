@@ -588,7 +588,7 @@
   }
 
   /* ---------- Registro (primer paso) ---------- */
-  function entrar(){
+  function entrar(mostrarHistoria){
     $('registro').hidden = true;
     ['paso1', 'paso2', 'paso3'].forEach(function(id){ $(id).hidden = false; });
     var u = estado.usuario;
@@ -597,7 +597,7 @@
     $('no-soy').addEventListener('click', function(){
       borrarUsuario(); estado.usuario = null; location.reload();
     });
-    if (!yaVista()) setTimeout(abrirHistoria, 250);
+    if (mostrarHistoria) setTimeout(abrirHistoria, 250);
   }
   $('r-entrar').addEventListener('click', function(){
     var err = $('r-err'); err.hidden = true;
@@ -611,7 +611,7 @@
     estado.usuario = { nombre:nombre, correo:correo, celular:cel };
     guardarUsuario(estado.usuario);
     enviar({ 'Id':nuevoId(), 'Fecha':new Date().toISOString(), 'Evento':'registro', 'Nombre':nombre, 'Correo':correo, 'Celular':cel, 'Autorizó datos':'Sí', 'Origen':origen });
-    entrar();
+    entrar(true); // la historia sale siempre justo después de registrarse
     if (window.lanzarConfeti) lanzarConfeti({ n:80, dur:2400 });
   });
 
