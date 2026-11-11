@@ -137,6 +137,12 @@
   .aviso-chico{ font-size:12.5px; color:var(--morado-oscuro); background:rgba(247,193,117,.35); border-radius:16px; padding:10px 14px; margin-top:12px; }
 
   /* Correo */
+  .saludo{ margin-top:10px; font-size:12.5px; font-weight:700; color:var(--morado-oscuro); }
+  .saludo button{ background:none; border:none; padding:0; margin-left:6px; font-family:inherit; font-size:12.5px; font-weight:700; color:var(--morado); text-decoration:underline; cursor:pointer; }
+  .envio{ text-align:center; }
+  .envio-icono{ font-size:38px; line-height:1; margin-bottom:6px; }
+  .envio.ok{ background:linear-gradient(135deg,rgba(223,243,175,.75),rgba(255,255,255,.85)); }
+  .envio.mal{ background:linear-gradient(135deg,rgba(249,225,255,.9),rgba(255,255,255,.85)); }
   .check{ display:flex; gap:10px; align-items:flex-start; margin:14px 0 0; font-weight:500; font-size:12.5px; }
   .check input{ margin-top:3px; width:18px; height:18px; flex:none; accent-color:var(--morado); }
   .ok-envio{ color:var(--bien); font-weight:700; margin-top:12px; }
@@ -169,9 +175,24 @@
     <h1>Calculadora Femi Portafolio</h1>
     <p>¿En qué se habría convertido tu tinto de cada día en los portafolios de los inversionistas más famosos del mundo?</p>
     <button type="button" class="link-historia" id="ver-historia">Conoce a Muriel Siebert →</button>
+    <div class="saludo" id="saludo" hidden></div>
   </section>
 
-  <section class="card entra" id="paso1">
+  <section class="card entra" id="registro">
+    <h2>Primero, cuéntanos quién eres</h2>
+    <p class="suave" style="margin-top:-2px">Con estos datos entras a la calculadora y, al terminar, te enviamos tu resultado al correo.</p>
+    <label for="r-nombre">Tu nombre</label>
+    <input type="text" id="r-nombre" autocomplete="name" placeholder="Nombre y apellido">
+    <label for="r-correo">Tu correo</label>
+    <input type="text" id="r-correo" inputmode="email" autocomplete="email" placeholder="tucorreo@ejemplo.com">
+    <label for="r-cel">Tu celular (WhatsApp)</label>
+    <input type="text" id="r-cel" inputmode="tel" autocomplete="tel" placeholder="Ej: 300 123 4567">
+    <label class="check"><input type="checkbox" id="r-acepto"><span>Autorizo a Feminario a tratar mi nombre, correo y celular para enviarme el resultado de esta calculadora, contenido y novedades, de acuerdo con la política de tratamiento de datos personales (Ley 1581 de 2012). Puedo retirar mi autorización cuando quiera.</span></label>
+    <div class="error" id="r-err" hidden></div>
+    <button class="btn" id="r-entrar" type="button">Entrar a la calculadora</button>
+  </section>
+
+  <section class="card entra" id="paso1" hidden>
     <h2>1. ¿Cuánto separas al mes?</h2>
     <div class="monto-grande"><span id="m-cop">$313.090</span> <small>pesos al mes</small></div>
     <div class="equiv" id="equiv"></div>
@@ -189,14 +210,14 @@
     </div>
   </section>
 
-  <section class="card entra" id="paso2">
+  <section class="card entra" id="paso2" hidden>
     <h2>2. ¿Qué portafolio?</h2>
     <p class="suave" style="margin-top:-2px">Cada uno invierte tus aportes en estos fondos (ETF) y los reparte siempre igual cada año.</p>
     <div class="opciones" id="opciones"></div>
     <div class="propia" id="propia" hidden></div>
   </section>
 
-  <section class="card entra" id="paso3">
+  <section class="card entra" id="paso3" hidden>
     <h2>3. ¿Desde qué año?</h2>
     <label for="inicio" style="margin-top:6px">Año en que empiezas a aportar</label>
     <select id="inicio"></select>
@@ -236,15 +257,11 @@
       <p class="aviso-chico" id="sens-txt"></p>
     </div>
 
-    <div class="card entra">
-      <h3>¿Quieres más portafolios de la serie?</h3>
-      <p class="lead" style="font-size:14.5px">Déjanos tu correo y te avisamos cuando haya nuevos portafolios y herramientas para empezar a invertir con calma.</p>
-      <label for="correo" style="margin-top:8px">Tu correo</label>
-      <input type="text" id="correo" inputmode="email" autocomplete="email" placeholder="tucorreo@ejemplo.com">
-      <label class="check"><input type="checkbox" id="acepto"><span>Autorizo a Feminario a tratar mi correo para enviarme contenido y novedades, de acuerdo con la política de tratamiento de datos personales (Ley 1581 de 2012). Puedo retirar mi autorización cuando quiera.</span></label>
-      <button class="btn" id="enviar" type="button">Quiero recibirlo</button>
-      <div class="error" id="err" hidden></div>
-      <div class="ok-envio" id="ok" hidden>¡Listo! Te escribiremos pronto. 💜</div>
+    <div class="card envio entra" id="envio">
+      <div class="envio-icono" id="envio-i">📬</div>
+      <h3 id="envio-t">Enviando tu resultado…</h3>
+      <p id="envio-p" class="suave" style="margin:0"></p>
+      <button class="btn secundario chico" type="button" id="envio-reintentar" hidden style="margin-top:12px">Reintentar</button>
     </div>
   </section>
 
@@ -462,7 +479,7 @@
   }
   function nombrePortafolio(){ return PORTAFOLIOS.filter(function(x){ return x.id === estado.portafolio; })[0].nombre; }
 
-  function mostrar(){
+  function mostrar(sinCorreo){
     var err = validar();
     var ec = $('err-calc');
     if (err){ ec.textContent = err; ec.hidden = false; ec.scrollIntoView({ behavior:'smooth', block:'center' }); return; }
@@ -486,6 +503,14 @@
     var sec = $('resultado'); sec.hidden = false;
     window.scrollTo({ top:0, behavior:'smooth' });
     if (window.lanzarConfeti) lanzarConfeti({ n:110, dur:2800 });
+    if (sinCorreo !== true && estado.usuario){
+      var u = estado.usuario;
+      ultimoPayload = { 'Id':nuevoId(), 'Fecha':new Date().toISOString(), 'Evento':'resultado', 'Nombre':u.nombre, 'Correo':u.correo, 'Celular':u.celular, 'Autorizó datos':'Sí',
+        'Portafolio':nombrePortafolio(), 'Mezcla':JSON.stringify(pesos), 'Aporte mensual COP':Math.round(estado.monto * TRM), 'Aporte mensual USD':Math.round(estado.monto * 100) / 100,
+        'Año inicio':estado.inicio, 'Aportado COP':Math.round(r.aportado * TRM), 'Valor final COP':Math.round(r.valor * TRM), 'Valor final USD':Math.round(r.valor),
+        'Mejor':pct(r.mejor.R * 100) + ' (' + r.mejor.y + ')', 'Peor':pct(r.peor.R * 100) + ' (' + r.peor.y + ')', 'Origen':origen };
+      mandarResultado();
+    }
   }
   $('calcular').addEventListener('click', mostrar);
   function volver(){
@@ -536,32 +561,85 @@
         estado.inicio = Number(b.dataset.y); $('inicio').value = estado.inicio;
         var rect = b.getBoundingClientRect();
         if (window.lanzarConfeti) lanzarConfeti({ n:28, dur:1800, x:rect.left + rect.width / 2, y:rect.top });
-        mostrar();
+        mostrar(true);
       });
     });
   }
 
-  /* ---------- Correo ---------- */
-  $('enviar').addEventListener('click', function(){
-    var err = $('err'); err.hidden = true;
-    var correo = $('correo').value.trim();
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(correo)){ err.textContent = 'Revisa tu correo.'; err.hidden = false; return; }
-    if (!$('acepto').checked){ err.textContent = 'Necesitamos tu autorización para guardar tu correo.'; err.hidden = false; return; }
-    var r = estado.ultimo;
-    var datos = {
-      'Fecha': new Date().toISOString(), 'Correo': correo, 'Autorizó datos': 'Sí',
-      'Portafolio': nombrePortafolio(), 'Mezcla': JSON.stringify(pesosActuales()),
-      'Aporte mensual USD': estado.monto, 'Año inicio': estado.inicio,
-      'Aportado USD': r ? Math.round(r.aportado) : '', 'Valor final USD': r ? Math.round(r.valor) : '',
-      'Origen': new URLSearchParams(location.search).get('origen') || new URLSearchParams(location.search).get('utm_source') || ''
-    };
-    var url = (window.PORTAFOLIO_CFG || {}).API_URL;
-    var fin = function(){ $('ok').hidden = false; $('enviar').disabled = true; if (window.lanzarConfeti) lanzarConfeti({ n:90, dur:2600 }); };
-    if (!url){ fin(); return; }
-    $('enviar').disabled = true;
-    fetch(url, { method:'POST', mode:'no-cors', headers:{ 'Content-Type':'text/plain' }, body:JSON.stringify(datos) })
-      .then(fin).catch(function(){ $('enviar').disabled = false; err.textContent = 'No pudimos guardarlo. Intenta de nuevo.'; err.hidden = false; });
+  /* ---------- Envío a la hoja y por correo ---------- */
+  var URL_API = (window.PORTAFOLIO_CFG || {}).API_URL;
+  var CLAVE_USUARIO = 'femi-portafolio-usuario';
+  function leerUsuario(){ try { var u = JSON.parse(localStorage.getItem(CLAVE_USUARIO) || 'null'); return u && u.correo ? u : null; } catch (e) { return null; } }
+  function guardarUsuario(u){ try { localStorage.setItem(CLAVE_USUARIO, JSON.stringify(u)); } catch (e) {} }
+  function borrarUsuario(){ try { localStorage.removeItem(CLAVE_USUARIO); } catch (e) {} }
+  var origen = new URLSearchParams(location.search).get('origen') || new URLSearchParams(location.search).get('utm_source') || '';
+  function nuevoId(){ return Date.now().toString(36) + Math.random().toString(36).slice(2, 8); }
+
+  // Un solo intento (con Id único) para que, si la respuesta no se puede leer, el reintento no duplique filas ni correos.
+  function enviar(datos){
+    if (!URL_API) return Promise.resolve({ sinApi:true });
+    var cuerpo = JSON.stringify(datos);
+    return fetch(URL_API, { method:'POST', headers:{ 'Content-Type':'text/plain;charset=utf-8' }, body:cuerpo })
+      .then(function(r){ return r.json(); })
+      .catch(function(){
+        return fetch(URL_API, { method:'POST', mode:'no-cors', headers:{ 'Content-Type':'text/plain' }, body:cuerpo })
+          .then(function(){ return { opaque:true }; });
+      });
+  }
+
+  /* ---------- Registro (primer paso) ---------- */
+  function entrar(){
+    $('registro').hidden = true;
+    ['paso1', 'paso2', 'paso3'].forEach(function(id){ $(id).hidden = false; });
+    var u = estado.usuario;
+    $('saludo').hidden = false;
+    $('saludo').innerHTML = 'Hola, ' + (u.nombre.split(' ')[0] || '').replace(/[<>&"]/g, '') + ' 💜 <button type="button" id="no-soy">¿No eres tú?</button>';
+    $('no-soy').addEventListener('click', function(){
+      borrarUsuario(); estado.usuario = null; location.reload();
+    });
+    if (!yaVista()) setTimeout(abrirHistoria, 250);
+  }
+  $('r-entrar').addEventListener('click', function(){
+    var err = $('r-err'); err.hidden = true;
+    var nombre = $('r-nombre').value.trim(), correo = $('r-correo').value.trim().toLowerCase(), cel = $('r-cel').value.replace(/[^\d+]/g, '');
+    var digitos = cel.replace(/\D/g, '');
+    var falla = nombre.length < 2 ? 'Escribe tu nombre.'
+      : !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(correo) ? 'Revisa tu correo.'
+      : digitos.length < 7 || digitos.length > 15 ? 'Revisa tu celular: escríbelo con todos sus números (en Colombia son 10).'
+      : !$('r-acepto').checked ? 'Necesitamos tu autorización para guardar tus datos y enviarte el resultado.' : '';
+    if (falla){ err.textContent = falla; err.hidden = false; return; }
+    estado.usuario = { nombre:nombre, correo:correo, celular:cel };
+    guardarUsuario(estado.usuario);
+    enviar({ 'Id':nuevoId(), 'Fecha':new Date().toISOString(), 'Evento':'registro', 'Nombre':nombre, 'Correo':correo, 'Celular':cel, 'Autorizó datos':'Sí', 'Origen':origen });
+    entrar();
+    if (window.lanzarConfeti) lanzarConfeti({ n:80, dur:2400 });
   });
+
+  /* ---------- Resultado por correo ---------- */
+  var ultimoPayload = null;
+  function pintarEnvio(estadoEnvio, extra){
+    var card = $('envio'), t = $('envio-t'), p = $('envio-p'), i = $('envio-i'), b = $('envio-reintentar');
+    var correo = (estado.usuario || {}).correo || '';
+    card.className = 'card envio entra'; b.hidden = true;
+    if (estadoEnvio === 'enviando'){ i.textContent = '📬'; t.textContent = 'Enviando tu resultado…'; p.textContent = 'Un momento, lo estamos mandando a ' + correo + '.'; }
+    else if (estadoEnvio === 'ok'){ card.className += ' ok'; i.textContent = '💌'; t.textContent = 'Te llegó a tu correo'; p.textContent = 'Te enviamos tu resultado a ' + correo + '. Si no lo ves en unos minutos, revisa spam o promociones.'; }
+    else if (estadoEnvio === 'opaco'){ card.className += ' ok'; i.textContent = '💌'; t.textContent = 'Te enviamos tu resultado'; p.textContent = 'Lo mandamos a ' + correo + '. Si no lo ves en unos minutos, revisa spam o promociones.'; }
+    else if (estadoEnvio === 'limite'){ i.textContent = '📬'; t.textContent = 'Ya te enviamos tus resultados'; p.textContent = 'Hoy ya te mandamos varios a ' + correo + '. Revisa tu correo (y spam). Tu resultado también está aquí arriba.'; }
+    else if (estadoEnvio === 'sin'){ i.textContent = '📬'; t.textContent = 'Tu resultado está aquí arriba'; p.textContent = 'El envío por correo todavía no está activo.'; }
+    else { card.className += ' mal'; i.textContent = '😕'; t.textContent = 'No pudimos enviarte el correo'; p.textContent = 'Tu resultado sí está aquí arriba. Intenta de nuevo en un momento.'; b.hidden = false; }
+  }
+  function mandarResultado(){
+    if (!ultimoPayload) return;
+    pintarEnvio('enviando');
+    enviar(ultimoPayload).then(function(r){
+      if (r && r.sinApi) pintarEnvio('sin');
+      else if (r && r.opaque) pintarEnvio('opaco');
+      else if (r && r.ok && r.emailed) { pintarEnvio('ok'); if (window.lanzarConfeti) lanzarConfeti({ n:90, dur:2600 }); }
+      else if (r && r.ok && /limite/.test(r.motivo || '')) pintarEnvio('limite');
+      else pintarEnvio('error');
+    });
+  }
+  $('envio-reintentar').addEventListener('click', function(){ if (ultimoPayload) ultimoPayload.Id = nuevoId(); mandarResultado(); });
 
   /* ---------- Estrellas de la portada ---------- */
   ['est1', 'est2'].forEach(function(id){
@@ -595,9 +673,9 @@
       if (e.shiftKey && document.activeElement === a){ e.preventDefault(); z.focus(); } else if (!e.shiftKey && document.activeElement === z){ e.preventDefault(); a.focus(); } }
   });
   $('ver-historia').addEventListener('click', abrirHistoria);
-  if (!yaVista()) abrirHistoria();
-
   pintarMonto(); pintarOpciones(); pintarPropia(); pintarAnios();
+  estado.usuario = leerUsuario();
+  if (estado.usuario) entrar();
 })();
 </script>
 </body>

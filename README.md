@@ -6,7 +6,8 @@ Página estática (GitHub Pages) que muestra en qué se habría convertido un ap
 - Aporte mensual (por defecto US$83, es decir US$1.000 al año) con su equivalente por día y en pesos (TRM de cierre de 2025).
 - Portafolios: El mundo entero (VT), Solo EE. UU. (SPY), 90/10 de Buffett, All Weather de Dalio, Swensen, 50/50 de Markowitz, Cathie Wood (ARKK), dividendos (NOBL y SCHD) y «arma la tuya».
 - Resultado: valor al 31-dic-2025, lo aportado, veces lo aportado, valor real (descontando inflación de EE. UU.), gráfica año por año, mejor y peor año, y qué habría pasado según el año de inicio.
-- Correo opcional con consentimiento → hoja de Google Sheets.
+- Primero un registro (nombre, correo y celular, con autorización); después el pop-up de la historia y la calculadora; al final se envía el resultado al correo.
+- Cada registro y cada cálculo se guarda en la hoja «Calculadora» (Google Sheets + Apps Script).
 
 ## Datos y límites (leer antes de tocar)
 - `assets/datos.js` trae el retorno total anual (USD, dividendos reinvertidos), el IPC y la TRM. Fuentes y fecha de consulta están en el encabezado del archivo.
@@ -18,11 +19,15 @@ Página estática (GitHub Pages) que muestra en qué se habría convertido un ap
 - Pendientes de verificar: comisión de AVUV, VBR, DBC y bonos cortos (SHY/BIL); series de materias primas, bonos cortos, VEA, ARKK; retornos en COP; el texto legal con abogado colombiano.
 - La cifra «unos US$41.000» del guion del video no coincide con el recálculo (≈US$50.000–53.000 a fines de 2025, con 18 aportes de US$1.000).
 
-## Guardar correos (Google Sheets + Apps Script)
+## Guardar registros y enviar el resultado por correo (Google Sheets + Apps Script)
 1. Crea una hoja de cálculo nueva.
 2. Extensiones → Apps Script, pega `apps-script/Code.gs`.
 3. Implementar → Aplicación web → Ejecutar como **yo** · Acceso **Cualquier persona**.
-4. Copia la URL `/exec` en `assets/config.js` (`API_URL`).
-5. Prueba y borra la fila de prueba.
+4. La primera vez Google pide permiso para enviar correos: acéptalo. El correo sale desde la cuenta con la que implementas.
+5. Copia la URL `/exec` en `assets/config.js` (`API_URL`). Si actualizas el código, crea una **Versión nueva** de la implementación.
+6. `GET` a la URL debe responder `version: 2, correo: true`.
+
+Límites: máx. 3 correos por persona y 250 en total cada 6 horas. Sin doble confirmación del correo: cualquiera puede escribir un correo ajeno, así que no uses la hoja como lista verificada.
+7. Prueba y borra las filas de prueba.
 
 Parámetros opcionales: `?origen=instagram` se guarda en la columna Origen.
