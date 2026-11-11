@@ -376,8 +376,9 @@
     { n:'salida a comer', np:'salidas a comer', e:'🍽️', p:90000 },
     { n:'escapada de fin de semana', np:'escapadas de fin de semana', e:'🧳', p:600000 }
   ];
-  var nombre = function(c, k){ return Math.abs(k - 1) < 0.05 ? c.n : c.np; };
-  var num = function(n){ return n < 10 ? n.toFixed(1).replace('.', ',').replace(',0', '') : Math.round(n).toLocaleString('es-CO'); };
+  var entero = function(n){ return Math.max(1, Math.round(n)); };
+  var nombre = function(c, k){ return entero(k) === 1 ? c.n : c.np; };
+  var num = function(n){ return entero(n).toLocaleString('es-CO'); };
   function pintarMonto(desde){
     var m = estado.monto, mCOP = m * TRM, diaCOP = mCOP * 12 / 365;
     $('m-cop').textContent = cop(mCOP);
@@ -388,7 +389,7 @@
     var tinto = diaCOP / COMPARABLES[0].p;
     var grande = COMPARABLES.filter(function(c){ return c.p <= mCOP; }).pop();
     var h = '';
-    if (tinto >= 0.3) h += '<div><span class="em">☕</span><span>Cada día separas <b>≈ ' + num(tinto) + ' ' + nombre(COMPARABLES[0], tinto) + '</b><small>a ' + cop(COMPARABLES[0].p) + ' cada uno, como en el video</small></span></div>';
+    if (tinto >= 0.5) h += '<div><span class="em">☕</span><span>Cada día separas <b>≈ ' + num(tinto) + ' ' + nombre(COMPARABLES[0], tinto) + '</b><small>a ' + cop(COMPARABLES[0].p) + ' cada uno</small></span></div>';
     if (grande && grande.p > COMPARABLES[0].p){ var k = mCOP / grande.p; h += '<div><span class="em">' + grande.e + '</span><span>Al mes eso son <b>≈ ' + num(k) + ' ' + nombre(grande, k) + '</b><small>a ' + cop(grande.p) + ' aprox. cada uno</small></span></div>'; }
     $('dimension').innerHTML = h + '<small class="suave" style="display:block">Precios de referencia aproximados en Colombia, solo para dimensionar.</small>';
   }
