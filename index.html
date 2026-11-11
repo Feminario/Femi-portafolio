@@ -44,19 +44,29 @@
   .modal{ position:fixed; inset:0; z-index:400; display:flex; align-items:center; justify-content:center; padding:18px; background:rgba(76,79,104,.5); -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px); animation:vela .3s ease both; }
   .modal[hidden]{ display:none; }
   .modal.sale{ animation:vela-fuera .25s ease both; }
-  .modal-caja{ position:relative; width:100%; max-width:460px; max-height:calc(100vh - 36px); overflow:auto; background:var(--crema); border-radius:30px; padding:20px 20px 22px; box-shadow:0 30px 80px rgba(76,79,104,.45); animation:sube .4s cubic-bezier(.2,.9,.3,1.2) both; }
+  .modal-caja{ position:relative; width:100%; max-width:760px; max-height:calc(100vh - 36px); overflow:auto; background:var(--crema); border-radius:30px; padding:22px; box-shadow:0 30px 80px rgba(76,79,104,.45); animation:sube .4s cubic-bezier(.2,.9,.3,1.2) both; }
   .modal.sale .modal-caja{ animation:baja .25s ease both; }
-  .modal-caja h2{ font-size:22px; margin:0 0 8px; }
+  .modal-caja h2{ font-size:22px; margin:0 0 8px; padding-right:26px; }
   .modal-caja p{ font-size:14px; margin:0 0 10px; }
   .modal-caja .btn{ margin-top:12px; }
-  .modal-x{ position:absolute; z-index:5; top:12px; left:12px; width:34px; height:34px; border-radius:50%; border:none; background:rgba(255,255,255,.9); color:var(--morado-oscuro); font-size:22px; line-height:1; cursor:pointer; box-shadow:0 4px 10px rgba(76,79,104,.25); }
+  .modal-x{ position:absolute; z-index:5; top:12px; right:14px; width:24px; height:24px; border-radius:50%; border:none; background:rgba(126,132,174,.16); color:var(--morado-oscuro); font-size:16px; line-height:1; padding:0; cursor:pointer; }
+  .modal-x:hover{ background:rgba(126,132,174,.3); }
+  .modal-grid{ display:grid; grid-template-columns:1fr; gap:16px; align-items:center; }
+  .modal-texto{ padding-right:6px; }
   .modal-x:focus-visible, .modal-caja .btn:focus-visible{ outline:3px solid var(--periwinkle); outline-offset:2px; }
-  .modal-estrella{ position:absolute; z-index:5; top:-18px; right:-12px; width:64px; animation:gira 12s linear infinite; pointer-events:none; }
+  .modal-estrella{ position:absolute; z-index:5; top:-18px; left:-14px; width:60px; animation:gira 12s linear infinite; pointer-events:none; }
   @keyframes vela{ from{ opacity:0; } to{ opacity:1; } }
   @keyframes vela-fuera{ from{ opacity:1; } to{ opacity:0; } }
   @keyframes sube{ from{ opacity:0; transform:translateY(30px) scale(.94); } to{ opacity:1; transform:none; } }
   @keyframes baja{ from{ opacity:1; transform:none; } to{ opacity:0; transform:translateY(20px) scale(.96); } }
   @media (prefers-reduced-motion: reduce){ .modal, .modal-caja{ animation:none; } }
+  .modal-grid > *{ min-width:0; }
+  @media (min-width:640px){
+    .modal-grid{ grid-template-columns:0.8fr 1fr; gap:26px; }
+    .modal-grid .foto-muriel{ margin:0; height:100%; min-height:340px; }
+    .modal-grid .foto-muriel img{ position:absolute; inset:0; height:100%; object-position:50% 16%; }
+    .modal-caja h2{ font-size:24px; margin-top:4px; } .modal-caja p{ font-size:14.5px; }
+  }
 
   /* Monto */
   .monto-grande{ font-family:'MuseoModerno',sans-serif; font-weight:800; font-size:44px; color:var(--morado-oscuro); line-height:1; }
@@ -260,14 +270,18 @@
   <div class="modal-caja">
     <img class="modal-estrella" src="assets/forma-sol.png" alt="">
     <button type="button" class="modal-x" id="mh-x" aria-label="Cerrar">×</button>
-    <figure class="foto-muriel">
-      <img src="assets/muriel-siebert.jpg" alt="Muriel Siebert, la primera mujer miembro de la Bolsa de Nueva York, sentada en su oficina con un lápiz en la mano">
-      <figcaption>Muriel Siebert · Bolsa de Nueva York, 1967</figcaption>
-    </figure>
-    <h2 id="mh-t">Antes de calcular, una historia</h2>
-    <p><strong>Muriel Siebert</strong> fue la primera mujer miembro de la Bolsa de Nueva York. En 1967 pagó US$445.000 por su puesto, y durante años fue la única mujer entre más de mil hombres. Después ayudó a que la gente común pudiera invertir con comisiones más bajas.</p>
-    <p>Aquí no copiamos a Muriel, porque no hay un portafolio suyo documentado. Copiamos la idea: que invertir también sea para ti. Pon cuánto puedes apartar y mira qué habría pasado con los portafolios que otros inversionistas hicieron famosos.</p>
-    <button class="btn" type="button" id="mh-ok">Vamos a calcular</button>
+    <div class="modal-grid">
+      <figure class="foto-muriel">
+        <img src="assets/muriel-siebert.jpg" alt="Muriel Siebert, la primera mujer miembro de la Bolsa de Nueva York, sentada en su oficina con un lápiz en la mano">
+        <figcaption>Muriel Siebert · Bolsa de Nueva York, 1967</figcaption>
+      </figure>
+      <div class="modal-texto">
+        <h2 id="mh-t">Antes de calcular, una historia</h2>
+        <p><strong>Muriel Siebert</strong> fue la primera mujer miembro de la Bolsa de Nueva York. En 1967 pagó US$445.000 por su puesto, y durante años fue la única mujer entre más de mil hombres. Después ayudó a que la gente común pudiera invertir con comisiones más bajas.</p>
+        <p>Aquí no copiamos a Muriel, porque no hay un portafolio suyo documentado. Copiamos la idea: que invertir también sea para ti. Pon cuánto puedes apartar y mira qué habría pasado con los portafolios que otros inversionistas hicieron famosos.</p>
+        <button class="btn" type="button" id="mh-ok">Vamos a calcular</button>
+      </div>
+    </div>
   </div>
 </div>
 
