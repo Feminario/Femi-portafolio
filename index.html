@@ -49,6 +49,14 @@
   .atajos{ display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
   .atajos button{ border:1.5px solid rgba(126,132,174,.3); background:rgba(255,255,255,.9); border-radius:999px; padding:8px 14px; font-family:inherit; font-weight:700; font-size:12.5px; color:var(--morado-oscuro); cursor:pointer; }
   .atajos button:hover{ background:var(--rosa-claro); border-color:var(--lavanda); }
+  .atajos button:focus{ outline:none; } .atajos button:focus-visible{ outline:3px solid var(--periwinkle); outline-offset:2px; }
+  .atajos button:active{ transform:scale(.97); }
+  .dimension{ display:grid; gap:8px; margin-top:14px; }
+  .dimension div{ display:flex; gap:12px; align-items:center; background:linear-gradient(135deg,rgba(223,243,175,.55),rgba(249,225,255,.7)); border-radius:18px; padding:10px 14px; font-size:13.5px; }
+  .dimension .em{ font-size:24px; line-height:1; flex:none; }
+  .dimension b{ color:var(--morado-oscuro); }
+  .dimension small{ display:block; color:var(--morado-suave); font-size:11.5px; font-weight:600; }
+  .usd-linea{ font-family:'MuseoModerno',sans-serif; font-weight:700; font-size:22px; color:var(--morado); margin-top:2px; }
 
   /* Portafolios */
   .opciones{ display:grid; gap:10px; }
@@ -145,14 +153,19 @@
 
   <section class="card entra" id="paso1">
     <h2>1. ¿Cuánto separas al mes?</h2>
-    <div class="monto-grande"><span id="m-usd">83</span> <small>dólares al mes</small></div>
+    <div class="monto-grande"><span id="m-cop">$313.090</span> <small>pesos al mes</small></div>
     <div class="equiv" id="equiv"></div>
-    <input type="range" id="monto" min="10" max="500" step="1" value="83" aria-label="Aporte mensual en dólares">
-    <div class="atajos">
+    <input type="range" id="monto" min="20000" max="2000000" step="5000" value="315000" aria-label="Aporte mensual en pesos colombianos">
+    <label for="monto-txt" style="margin-top:14px">O escribe el monto exacto (pesos al mes)</label>
+    <input type="text" id="monto-txt" inputmode="numeric" autocomplete="off" placeholder="Ej: 300.000">
+    <div class="dimension" id="dimension"></div>
+    <div class="atajos" id="atajos">
+      <button type="button" data-cop="100000">$100.000 al mes</button>
+      <button type="button" data-cop="200000">$200.000</button>
       <button type="button" data-usd="83.3333">US$1.000 al año</button>
-      <button type="button" data-usd="41.6667">US$500 al año</button>
-      <button type="button" data-usd="166.6667">US$2.000 al año</button>
-      <button type="button" data-cop="9000">Un tinto con almojábana al día (9.000 COP)</button>
+      <button type="button" data-cop="500000">$500.000</button>
+      <button type="button" data-cop="1000000">$1.000.000</button>
+      <button type="button" data-cop="273750">Un tinto con almojábana al día</button>
     </div>
   </section>
 
@@ -177,18 +190,19 @@
     <div class="card res-principal entra">
       <p class="intro" id="r-intro"></p>
       <div class="cifra" id="r-valor"></div>
+      <div class="usd-linea" id="r-usd"></div>
       <div class="sub" id="r-sub"></div>
       <div class="trio">
-        <div><b id="r-aportado"></b><span>pusiste de tu bolsillo</span></div>
+        <div><b id="r-aportado"></b><span>pusiste de tu bolsillo (pesos)</span></div>
         <div><b id="r-veces"></b><span>veces lo aportado</span></div>
-        <div><b id="r-real"></b><span>valor real (con inflación)</span></div>
+        <div><b id="r-real"></b><span>valor real, en US$ de ese año</span></div>
       </div>
       <div class="aviso-chico" id="r-nota"></div>
     </div>
 
     <div class="card entra">
       <h3>Año por año</h3>
-      <svg class="grafica" id="grafica" viewBox="0 0 640 280" role="img" aria-label="Gráfica de lo aportado y el valor del portafolio año por año"></svg>
+      <svg class="grafica" id="grafica" viewBox="0 0 640 280" role="img" aria-label="Gráfica, en pesos, de lo aportado y el valor del portafolio año por año"></svg>
       <div class="leyenda-g"><span><i style="background:#7E84AE"></i>Valor del portafolio</span><span><i style="background:#F59356"></i>Lo que aportaste</span></div>
       <div class="mejor-peor" id="mejor-peor"></div>
       <p class="suave" style="margin:12px 0 0">Mira los años malos: hay caídas fuertes y toca aguantarlas. Invertir no es una línea que sube.</p>
@@ -224,11 +238,12 @@
     <h3>Importante</h3>
     <p><strong>Contenido exclusivamente educativo.</strong> Esta calculadora es una simulación con datos históricos. El contenido de la presente comunicación o mensaje no constituye una recomendación profesional para realizar inversiones en los términos del artículo 2.40.1.1.2 del Decreto número 2555 de 2010 o las normas que lo modifiquen, sustituyan o complementen. No es asesoría financiera, legal ni tributaria, ni una oferta o promoción de valores o productos en Colombia, y no tiene en cuenta tu situación personal, tus objetivos ni tu tolerancia al riesgo.</p>
     <p><strong>Las rentabilidades pasadas no garantizan resultados futuros.</strong> El valor de las inversiones puede subir o bajar, y puedes perder parte o la totalidad del dinero invertido.</p>
-    <p>Los resultados no incluyen comisiones de corredores, impuestos (retenciones en EE. UU., impuestos en Colombia) ni costos de cambio de moneda. El «valor real» solo descuenta la inflación de EE. UU. Los portafolios son interpretaciones educativas de lo que sus autores han dicho públicamente y no implican que esas personas hayan recomendado esta herramienta ni participen en ella. Antes de invertir, consulta a un profesional autorizado.</p>
+    <p>Los resultados no incluyen comisiones de corredores, impuestos (retenciones en EE. UU., impuestos en Colombia) ni costos de cambio de moneda; los valores en pesos usan el dólar de cierre de 2025 para todo el período. El «valor real» solo descuenta la inflación de EE. UU. Los portafolios son interpretaciones educativas de lo que sus autores han dicho públicamente y no implican que esas personas hayan recomendado esta herramienta ni participen en ella. Antes de invertir, consulta a un profesional autorizado.</p>
     <details class="fuentes">
       <summary>Cómo se calcula y de dónde salen los datos</summary>
       <p style="margin-top:8px">Aportas la misma cantidad cada mes, al inicio del mes, desde el año que elijas hasta el 31 de diciembre de 2025. Usamos el retorno total anual en dólares de cada ETF, con dividendos reinvertidos, y repartimos ese retorno en tasas mensuales iguales dentro de cada año (por eso es una aproximación). El portafolio se rebalancea cada año a los mismos porcentajes. Si un fondo empezó a mitad de un año, ese año cuenta solo desde su lanzamiento. Cuando cambias de año de inicio el resultado cambia mucho: por eso lo mostramos.</p>
       <p>Retornos: Total Real Returns (agregadora secundaria; certeza media). Inflación: IPC de EE. UU., Economic Report of the President 2026 (dato de 2025 provisional). TRM: Superfinanciera y Banco de la República. Consultadas el 11 de noviembre de 2026. Los datos no son oficiales y pueden tener diferencias con el valor liquidativo publicado por cada gestor.</p>
+      <p>Tu aporte en pesos se convierte a dólares con la TRM de cierre de 2025 ($3.757) y el resultado vuelve a pesos con la misma tasa. Es una simplificación: el dólar subió y bajó durante esos años y eso cambiaría tu resultado real en pesos.</p>
       <p style="margin:0">Esta herramienta no permite comprar ni ejecutar órdenes sobre ningún valor.</p>
     </details>
   </section>
@@ -318,16 +333,41 @@
   }
 
   /* ---------- Monto ---------- */
-  function pintarMonto(){
-    var m = estado.monto, dia = m * 12 / 365;
-    $('m-usd').textContent = Math.round(m);
-    $('equiv').innerHTML = '<span>' + usd(m*12) + ' al año</span><span>US$' + dia.toFixed(2).replace('.', ',') + ' al día</span><span>≈ ' + cop(dia * TRM) + ' COP al día</span><span>≈ ' + cop(m * TRM) + ' COP al mes</span>';
+  var COMPARABLES = [ // precios de referencia aproximados en Colombia, solo para dimensionar (no son cifras oficiales)
+    { n:'tinto con almojábana', np:'tintos con almojábana', e:'☕', p:9000 },
+    { n:'almuerzo corriente', np:'almuerzos corrientes', e:'🍲', p:16000 },
+    { n:'entrada a cine', np:'entradas a cine', e:'🎬', p:20000 },
+    { n:'plan de streaming', np:'planes de streaming', e:'📺', p:25000 },
+    { n:'domicilio de comida', np:'domicilios de comida', e:'🛵', p:40000 },
+    { n:'salida a comer', np:'salidas a comer', e:'🍽️', p:90000 },
+    { n:'escapada de fin de semana', np:'escapadas de fin de semana', e:'🧳', p:600000 }
+  ];
+  var nombre = function(c, k){ return Math.abs(k - 1) < 0.05 ? c.n : c.np; };
+  var num = function(n){ return n < 10 ? n.toFixed(1).replace('.', ',').replace(',0', '') : Math.round(n).toLocaleString('es-CO'); };
+  function pintarMonto(desde){
+    var m = estado.monto, mCOP = m * TRM, diaCOP = mCOP * 12 / 365;
+    $('m-cop').textContent = cop(mCOP);
+    if (desde !== 'txt') $('monto-txt').value = Math.round(mCOP).toLocaleString('es-CO');
+    $('monto').value = Math.min(2000000, Math.max(20000, Math.round(mCOP / 5000) * 5000));
+    $('equiv').innerHTML = '<span>' + cop(mCOP * 12) + ' al año</span><span>≈ ' + cop(diaCOP) + ' al día</span><span>≈ ' + usd(m) + ' al mes</span>';
+    // dimensionarlo: un par de comparaciones con cosas del día a día
+    var tinto = diaCOP / COMPARABLES[0].p;
+    var grande = COMPARABLES.filter(function(c){ return c.p <= mCOP; }).pop();
+    var h = '';
+    if (tinto >= 0.3) h += '<div><span class="em">☕</span><span>Cada día separas <b>≈ ' + num(tinto) + ' ' + nombre(COMPARABLES[0], tinto) + '</b><small>a ' + cop(COMPARABLES[0].p) + ' cada uno, como en el video</small></span></div>';
+    if (grande && grande.p > COMPARABLES[0].p){ var k = mCOP / grande.p; h += '<div><span class="em">' + grande.e + '</span><span>Al mes eso son <b>≈ ' + num(k) + ' ' + nombre(grande, k) + '</b><small>a ' + cop(grande.p) + ' aprox. cada uno</small></span></div>'; }
+    $('dimension').innerHTML = h + '<small class="suave" style="display:block">Precios de referencia aproximados en Colombia, solo para dimensionar.</small>';
   }
-  $('monto').addEventListener('input', function(){ estado.monto = Number(this.value); pintarMonto(); });
+  $('monto').addEventListener('input', function(){ estado.monto = Number(this.value) / TRM; pintarMonto(); });
+  $('monto-txt').addEventListener('input', function(){
+    var v = Number(this.value.replace(/\D/g, ''));
+    if (v >= 1000){ estado.monto = Math.min(5000000, v) / TRM; pintarMonto('txt'); }
+  });
+  $('monto-txt').addEventListener('blur', function(){ pintarMonto(); });
   document.querySelectorAll('.atajos button').forEach(function(b){
     b.addEventListener('click', function(){
-      var v = b.dataset.usd ? Number(b.dataset.usd) : Math.round(Number(b.dataset.cop) * 365 / 12 / TRM);
-      estado.monto = Math.min(500, Math.max(10, v)); $('monto').value = Math.round(estado.monto); pintarMonto();
+      estado.monto = b.dataset.usd ? Number(b.dataset.usd) : Number(b.dataset.cop) / TRM;
+      pintarMonto();
     });
   });
 
@@ -395,13 +435,14 @@
     var pesos = pesosActuales(), r = simular(pesos, estado.inicio, estado.monto);
     estado.ultimo = r;
     var veces = r.valor / r.aportado;
-    $('r-intro').textContent = 'Con ' + usd(estado.monto) + ' al mes en «' + nombrePortafolio() + '», desde ' + estado.inicio + ' hasta fines de 2025 (' + r.anios + ' años), esta simulación con datos históricos da:';
-    $('r-valor').innerHTML = usd(r.valor) + ' <small>al 31 dic. 2025</small>';
-    $('r-sub').textContent = 'No es una promesa: es lo que habría pasado en ese período concreto.';
-    $('r-aportado').textContent = usd(r.aportado);
+    $('r-intro').textContent = 'Con ' + cop(estado.monto * TRM) + ' al mes (≈ ' + usd(estado.monto) + ') en «' + nombrePortafolio() + '», desde ' + estado.inicio + ' hasta fines de 2025 (' + r.anios + ' años), esta simulación con datos históricos da:';
+    $('r-valor').innerHTML = cop(r.valor * TRM) + ' <small>pesos, al 31 dic. 2025</small>';
+    $('r-usd').textContent = usd(r.valor) + ' dólares';
+    $('r-sub').textContent = 'En pesos, al dólar de cierre de 2025 (' + cop(TRM) + '). No es una promesa: es lo que habría pasado en ese período concreto.';
+    $('r-aportado').textContent = cop(r.aportado * TRM);
     $('r-veces').textContent = veces.toFixed(1).replace('.', ',') + '×';
     $('r-real').textContent = usd(r.real);
-    $('r-nota').textContent = 'El valor real descuenta la inflación de EE. UU. y se expresa en dólares de ' + estado.inicio + '. Sin comisiones de bróker, impuestos ni cambio de moneda.';
+    $('r-nota').textContent = 'El valor real (en dólares) descuenta la inflación de EE. UU. y se expresa en dólares de ' + estado.inicio + '. Convertimos todo al dólar de cierre de 2025: si el peso se hubiera devaluado o revaluado durante esos años, tu resultado en pesos sería distinto. Sin comisiones de bróker ni impuestos.';
     $('mejor-peor').innerHTML =
       '<div class="mejor">Mejor año<b>' + pct(r.mejor.R * 100) + '</b>' + r.mejor.y + '</div>' +
       '<div class="peor">Peor año<b>' + pct(r.peor.R * 100) + '</b>' + r.peor.y + '</div>';
@@ -423,7 +464,7 @@
   $('otro-bot').addEventListener('click', volver);
 
   function grafica(r){
-    var W = 640, H = 280, pl = 56, pr = 14, pt = 14, pb = 30, n = r.serie.length;
+    var W = 640, H = 280, pl = 72, pr = 14, pt = 14, pb = 30, n = r.serie.length;
     var max = Math.max.apply(null, r.serie.map(function(s){ return Math.max(s.valor, s.aportado); })) * 1.08;
     var x = function(i){ return pl + (n === 1 ? 0 : i * (W - pl - pr) / (n - 1)); };
     var y = function(v){ return H - pb - v / max * (H - pt - pb); };
@@ -431,7 +472,7 @@
     var g = '';
     for (var t = 0; t <= 4; t++){
       var v = max * t / 4, yy = y(v);
-      g += '<line x1="' + pl + '" x2="' + (W - pr) + '" y1="' + yy + '" y2="' + yy + '" stroke="rgba(126,132,174,.2)"/><text x="' + (pl - 8) + '" y="' + (yy + 4) + '" text-anchor="end">' + (v >= 1000 ? 'US$' + Math.round(v / 1000) + ' mil' : 'US$' + Math.round(v)) + '</text>';
+      g += '<line x1="' + pl + '" x2="' + (W - pr) + '" y1="' + yy + '" y2="' + yy + '" stroke="rgba(126,132,174,.2)"/><text x="' + (pl - 8) + '" y="' + (yy + 4) + '" text-anchor="end">' + (v * TRM >= 1e6 ? '$' + (v * TRM / 1e6).toFixed(v * TRM >= 1e7 ? 0 : 1).replace('.', ',') + ' mill.' : '$' + Math.round(v * TRM / 1000) + ' mil') + '</text>';
     }
     var paso = Math.ceil(n / 7);
     r.serie.forEach(function(s, i){ if (i % paso === 0 || i === n - 1) g += '<text x="' + x(i) + '" y="' + (H - 8) + '" text-anchor="middle">' + s.y + '</text>'; });
