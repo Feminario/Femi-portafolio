@@ -322,7 +322,8 @@
     VXUS:'Acciones fuera de EE. UU. (VXUS)', BND:'Bonos de EE. UU. (BND)', TLT:'Bonos del Tesoro a 20+ años (TLT)',
     IEF:'Bonos del Tesoro a 7–10 años (IEF)', TIP:'Bonos ligados a la inflación (TIP)', GLD:'Oro (GLD)',
     VNQ:'Inmobiliario (VNQ)', VWO:'Mercados emergentes (VWO)',
-    ARKK:'Innovación, ARK Innovation (ARKK)', NOBL:'Dividendos crecientes, S&P 500 Aristocrats (NOBL)', SCHD:'Dividendos de calidad (SCHD)'
+    ARKK:'Innovación, ARK Innovation (ARKK)', NOBL:'Dividendos crecientes, S&P 500 Aristocrats (NOBL)', SCHD:'Dividendos de calidad (SCHD)',
+    BRKB:'Berkshire Hathaway (BRK.B)', AVUV:'Empresas pequeñas baratas de EE. UU. (AVUV)'
   };
 
   var PORTAFOLIOS = [
@@ -330,6 +331,8 @@
     { id:'sp', nombre:'Solo Estados Unidos', quien:'S&P 500', desc:'Las 500 empresas más grandes de EE. UU. Es la serie más larga que tenemos (desde 1993).', pesos:{SPY:100} },
     { id:'buffett', nombre:'90 / 10 de Warren Buffett', quien:'Inspirado en lo que dejó escrito para el fideicomiso de su esposa', aprox:true,
       desc:'Él habló de 90% en un fondo S&P 500 de bajo costo y 10% en bonos del gobierno de corto plazo. No tenemos la serie de bonos cortos: usamos bonos a 7–10 años (IEF) como aproximación.', pesos:{SPY:90, IEF:10} },
+    { id:'brk', nombre:'Berkshire Hathaway de Warren Buffett', quien:'La acción BRK.B, su empresa', aprox:true,
+      desc:'No es un portafolio sino una sola acción: la empresa que Buffett dirige (aseguradora, ferrocarril, Apple, Coca-Cola…). Ojo: él mismo dice que hoy es gigante y crece más lento, así que no esperes repetir el pasado. Disponible desde mayo de 1996.', pesos:{BRKB:100} },
     { id:'dalio', nombre:'All Weather de Ray Dalio', quien:'Versión del libro de Tony Robbins', aprox:true,
       desc:'Acciones, bonos largos, bonos medios, oro y materias primas. No tenemos la serie de materias primas (7,5%), así que repartimos ese peso entre los demás. No es el fondo real de Bridgewater.', pesos:{VTI:32.43, TLT:43.24, IEF:16.22, GLD:8.11} },
     { id:'swensen', nombre:'Modelo de David Swensen', quien:'Su libro para inversionistas individuales (2005)', aprox:true,
@@ -342,6 +345,8 @@
       desc:'Empresas que han subido su dividendo 25 años seguidos. No replica el método de Weiss (ella miraba el rendimiento del dividendo frente a su historia). Cobra 0,35% y en 2023, 2024 y 2025 rindió menos que el S&P 500. Desde octubre de 2013.', pesos:{NOBL:100} },
     { id:'schd', nombre:'Dividendos de calidad (SCHD)', quien:'Otra versión de la idea de dividendos', aprox:true,
       desc:'Un fondo de dividendos de empresas sólidas, con comisión baja (0,06%, dato de fuente secundaria). Los dos periodos de NOBL y SCHD no son comparables entre sí porque empiezan en fechas distintas. Desde octubre de 2011.', pesos:{SCHD:100} },
+    { id:'hobson', nombre:'Empresas pequeñas de Mellody Hobson', quien:'Inspirado en la filosofía de Ariel Investments (AVUV)', aprox:true,
+      desc:'Ariel, la firma de Mellody Hobson, compra empresas pequeñas que casi nadie mira. No replicamos su fondo: usamos AVUV, que invierte en cientos de empresas pequeñas baratas y rentables de EE. UU. Es un fondo joven (desde septiembre de 2019): solo cubre unos 6 años.', pesos:{AVUV:100} },
     { id:'propia', nombre:'Arma la tuya', quien:'Mezcla los fondos que quieras', desc:'Pon el porcentaje de cada fondo. Debe sumar 100%.', pesos:null }
   ];
 
